@@ -32,9 +32,23 @@ class IonosService
             throw new \Exception('Error al obtener los detalles del dominio: ' . $data['message'] ?? 'Error desconocido');
         }
 
-        //dd($data);
-
-
         return $data;
     }
+
+    public function obtenerContactoDominio($id)
+    {
+        $response = Http::withHeaders([
+            'X-Api-Key' => config('services.ionos.key'),
+        ])->acceptJson()->get("https://api.hosting.ionos.com/domains/v1/domainitems/{$id}/contacts");
+
+        $data = $response->json();
+
+        if ($response->failed()) {
+            throw new \Exception('Error al obtener el dominio: ' . ($data['message'] ?? 'Error desconocido'));
+        }
+        //dd($data['registrant']['postalInfo']['address']['postalCode']);
+        // Puedes ajustar el tipo de contacto que quieres (adminContact, ownerContact, etc.)
+        return $data['registrant'] ?? [];
+    }
+
 }
