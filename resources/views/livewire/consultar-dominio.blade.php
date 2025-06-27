@@ -54,7 +54,6 @@
                         </button>
                     </form>
                 </div>
-                @livewire('contacto-modal')
             </div>
         @endif
     </div>
