@@ -54,7 +54,7 @@
                             <a href="https://ivarscomagenciadepublicidad.com" class="accent-accent" target="__black">IVARSCOM</a>
                         </p>
                         <p class="mb-4 text-[#706f6c] dark:text-[#A1A09A] text-[14px] leading-[20px]">
-                            Para comenzar, inicia sesión o regístrate.
+                            Para comenzar, inicia sesión o contacta con nosotros para contratar este sistema.
                         </p>
                     </div>
 
