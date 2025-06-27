@@ -62,10 +62,6 @@ class ConsultarDominios extends Component
 
         return view('livewire.consultar-dominios', ['dominios' => $paginated]);
     }
-    public function dominio($dominioId)
-    {
-        $this->emit('dominioSeleccionado', $dominioId);
-    }
 
     private function paginateCollection($items, $perPage)
     {
