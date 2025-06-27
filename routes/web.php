@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
     Route::get('/dominios/{id}', ConsultarDominio::class)->name('dominios.show');
-    Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/users', [UsersController::class, 'index'])->name('users');
 
 });
 
