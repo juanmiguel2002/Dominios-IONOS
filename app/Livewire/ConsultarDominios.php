@@ -5,11 +5,12 @@ namespace App\Livewire;
 use App\Services\IonosService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ConsultarDominios extends Component
 {
 
-    use \Livewire\WithPagination;
+    use WithPagination;
 
     public $search = '';
     public $limit = 25;
@@ -58,9 +59,17 @@ class ConsultarDominios extends Component
         );
 
         // Paginar manualmente
-        $paginated = $this->paginateCollection($domains, $this->limit);
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $items = $domains->slice(($currentPage - 1) * $this->limit, $this->limit)->values();
+        $paginator = new LengthAwarePaginator(
+            $items,
+            $domains->count(),
+            $this->limit,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
-        return view('livewire.consultar-dominios', ['dominios' => $paginated]);
+        return view('livewire.consultar-dominios', ['dominios' => $paginator]);
     }
 
     private function paginateCollection($items, $perPage)
