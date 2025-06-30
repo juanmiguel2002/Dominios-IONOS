@@ -4,9 +4,15 @@
             Detalle del Dominio: <span class=" dark:text-white-400">{{ $dominio['name'] }}</span>
         </h1>
 
-        @if ($error)
-            <div class="bg-red-100 text-red-700 p-4 rounded-md border border-red-300 mb-6">
-                {{ $error }}
+        @if (session('error'))
+            <div class="alert alert-danger bg-red-100 text-red-700 p-4 rounded-md border border-red-300 mb-6">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="alert alert-success bg-green-100 text-green-700 p-4 rounded-md border border-green-300 mb-6">
+                {{ session('success') }}
             </div>
         @endif
 
@@ -39,7 +45,7 @@
                         <li><strong>Empresa:</strong> {{ $contacto['postalInfo']['organization'] ?? 'N/A' }}</li>
                         <li><strong>Email:</strong> {{ $contacto['email'] ?? 'N/A' }}</li>
                         <li><strong>Teléfono:</strong> {{ $contacto['voice'] ?? 'N/A' }}</li>
-                        <li><strong>Dirección:</strong> {{ $contacto['postalInfo']['address']['streets'][0]." ". $contacto['postalInfo']['address']['postalCode'] . " ". $contacto['postalInfo']['address']['city'] ?? 'N/A' }}</li>
+                        <li><strong>Dirección:</strong> {{ $contacto['postalInfo']['address']['streets'][0].", ". $contacto['postalInfo']['address']['postalCode'] . " ". $contacto['postalInfo']['address']['city'] ?? 'N/A' }}</li>
                         <li><strong>País:</strong> {{ $contacto['country'] ?? 'ES' }}</li>
                     </ul>
 
@@ -47,16 +53,11 @@
                 <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
 
                     <!-- Botón para enviar aviso -->
-                    <form method="POST" action="">
-                        @csrf
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition">
-                            Enviar aviso de renovación
-                        </button>
-                    </form>
+                    <button wire:click="enviarNotificacion('{{ $dominio['id'] }}')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition cursor-pointer">
+                        Enviar aviso de renovación
+                    </button>
                 </div>
             </div>
         @endif
     </div>
-
-
 </div>
