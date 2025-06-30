@@ -37,7 +37,7 @@ class ConsultarDominio extends Component
         return view('livewire.consultar-dominio');
     }
 
-    public function enviarNotificacion($id)
+    public function enviarNotificacion()
     {
 
         if (!$this->dominio) {
@@ -46,9 +46,7 @@ class ConsultarDominio extends Component
         }
 
         $nombre = $this->dominio['name'];
-        $fecha = \Carbon\Carbon::parse($this->dominio['expirationDate'])->format('d/m/Y');
-
-        $envio = Mail::to($this->contacto['email'])->send(new RenovacionDominio($nombre, $fecha));
+        $envio = Mail::to($this->contacto['email'])->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
 
         if (!$envio) {
             session()->flash('error', 'Error al enviar la notificación');
