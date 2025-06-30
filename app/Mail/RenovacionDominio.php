@@ -3,10 +3,7 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class RenovacionDominio extends Mailable
@@ -16,10 +13,10 @@ class RenovacionDominio extends Mailable
     public $dominio;
     public $fecha;
 
-    public function __construct($dominio, $fecha = null)
+    public function __construct($dominio, $fecha)
     {
         $this->dominio = $dominio;
-        $this->fecha = $fecha ?? now()->addDays(30)->format('d-m-Y');
+        $this->fecha = $fecha;
     }
 
     public function build()
