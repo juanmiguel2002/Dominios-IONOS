@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -16,12 +17,12 @@ class RenovacionDominio extends Mailable
     public function __construct($dominio, $fecha)
     {
         $this->dominio = $dominio;
-        $this->fecha = $fecha;
+        $this->fecha = Carbon::parse($fecha)->format('d/m/Y');
     }
 
     public function build()
     {
         return $this->subject("Aviso de renovación de dominio: {$this->dominio}")
-                    ->view('emails.renovacion-dominio');
+                    ->view('emails.renovacion');
     }
 }

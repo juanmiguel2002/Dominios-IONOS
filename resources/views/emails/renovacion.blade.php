@@ -24,11 +24,12 @@
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
-                    Si no recibimos una respuesta o contacto por su parte antes de esa fecha, procederemos automáticamente con la renovación del dominio según lo establecido en nuestros términos y condiciones.
+                    Si no recibimos una respuesta o contacto por su parte antes de esa fecha,
+                    procederemos automáticamente con la renovación del dominio según lo establecido en nuestros términos y condiciones.
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
-                    Si desea realizar alguna modificación o no desea continuar con la renovación, por favor, póngase en contacto con nuestro equipo antes del <strong>{{ Carbon::parse($fecha)->subDays(2)->format('d/m/Y') }}</strong>.
+                    Si desea realizar alguna modificación o no desea continuar con la renovación, por favor, póngase en contacto con nuestro informático.
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
@@ -46,4 +47,3 @@
     </table>
 </body>
 </html>
-
