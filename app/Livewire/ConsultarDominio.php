@@ -46,12 +46,13 @@ class ConsultarDominio extends Component
         }
 
         $nombre = $this->dominio['name'];
-        $envio = Mail::to($this->contacto['email'])->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
-
-        if (!$envio) {
-            session()->flash('error', 'Error al enviar la notificación');
+        $email = $this->contacto['email'] ?? null;
+        if (!$email) {
+            session()->flash('error', 'No se encontró un email de contacto para el dominio');
             return;
         }
+        Mail::to($email)->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
+
         // Despachar evento de éxito
         session()->flash('success', 'Notificación enviada correctamente');
     }

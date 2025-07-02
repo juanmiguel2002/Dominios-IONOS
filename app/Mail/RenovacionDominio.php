@@ -37,7 +37,6 @@ class RenovacionDominio extends Mailable
                 'dominio' => $this->dominio,
                 'fecha' => $this->fecha,
             ]
-
         );
     }
 }
