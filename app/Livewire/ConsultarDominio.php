@@ -32,11 +32,6 @@ class ConsultarDominio extends Component
         $this->dispatch('mostrarContacto', $this->id);
     }
 
-    public function render()
-    {
-        return view('livewire.consultar-dominio');
-    }
-
     public function enviarNotificacion()
     {
 
@@ -51,9 +46,22 @@ class ConsultarDominio extends Component
             session()->flash('error', 'No se encontró un email de contacto para el dominio');
             return;
         }
-        Mail::to($email)->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
+        $user = auth()->user();
+        //dd($user->email);
+        $envio = Mail::to($user->email, 'Admin dominio')->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
+        //dd($envio);
+        // Verificar si el envío fue exitoso
+        if (!$envio) {
+            session()->flash('error', 'Error al enviar la notificación: ');
+            return;
+        }
 
         // Despachar evento de éxito
         session()->flash('success', 'Notificación enviada correctamente');
+    }
+
+    public function render()
+    {
+        return view('livewire.consultar-dominio');
     }
 }
