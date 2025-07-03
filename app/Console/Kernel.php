@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
+        \App\Console\Commands\EnviarRenovaciones::class,
     ];
 
     /**
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('ionos:notificar-renovacion')->dailyAt('08:00');
+        $schedule->command('dominios:enviar-renovaciones')->dailyAt('08:00'); // cada día a las 08:00
     }
 
     /**
