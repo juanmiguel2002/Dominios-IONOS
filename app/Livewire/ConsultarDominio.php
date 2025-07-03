@@ -48,7 +48,7 @@ class ConsultarDominio extends Component
         }
         $user = auth()->user();
         //dd($user->email);
-        $envio = Mail::to($user->email, 'Admin dominio')->send(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
+        $envio = Mail::to($user->email, 'Admin dominio')->queue(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
         //dd($envio);
         // Verificar si el envío fue exitoso
         if (!$envio) {

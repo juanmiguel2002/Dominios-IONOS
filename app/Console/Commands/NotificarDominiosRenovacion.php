@@ -27,7 +27,7 @@ class NotificarDominiosRenovacion extends Command
             });
 
             if (!empty($aNotificar)) {
-                Mail::to(config('mail.admin_address'))
+                Mail::to('web@ivarscomagenciadepublicidad.com')
                     ->send(new DominiosPorRenovar(array_values($aNotificar)));
 
                 $this->info('Correo enviado con ' . count($aNotificar) . ' dominios próximos a renovar.');

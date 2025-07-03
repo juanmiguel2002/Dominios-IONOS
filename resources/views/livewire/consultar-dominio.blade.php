@@ -53,9 +53,9 @@
                 <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
 
                     <!-- Botón para enviar aviso -->
-                    <button wire:click="enviarNotificacion" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition cursor-pointer">
+                    <a wire:click="enviarNotificacion" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded transition cursor-pointer">
                         Enviar aviso de renovación
-                    </button>
+                    </a>
                 </div>
             </div>
         @endif
