@@ -15,6 +15,7 @@ class EnviarRenovaciones extends Command
 
     public function handle(IonosService $ionos)
     {
+        $this->info('Ejecutando comando...');
         try {
             $dominios = $ionos->obtenerDominios();
 
@@ -28,7 +29,7 @@ class EnviarRenovaciones extends Command
                     $nombreDominio = $dominio['name'];
 
                     // Envía el correo
-                    Mail::to(['admin@tuempresa.com', 'cliente@ejemplo.com'])
+                    Mail::to('web@ivarscomagenciadepublicidad.com',)
                         ->send(new RenovacionDominio($nombreDominio, $fecha));
 
                     $this->info("Correo enviado para el dominio: {$nombreDominio}");
