@@ -22,13 +22,13 @@ class NotificarDominiosRenovacion extends Command
             $limite = $hoy->copy()->addDays(30);
 
             $aNotificar = array_filter($dominios[], function ($dominio) use ($limite) {
-                $fechaRenovacion = $dominio['status']['provisioningStatus']['setToRenewOn'] ?? null;
+                $fechaRenovacion = $dominio['provisioningStatus']['setToRenewOn'] ?? null;
                 return $fechaRenovacion && Carbon::parse($fechaRenovacion)->between(now(), $limite);
             });
 
             if (!empty($aNotificar)) {
                 Mail::to('web@ivarscomagenciadepublicidad.com')
-                    ->send(new DominiosPorRenovar(array_values($aNotificar)));
+                    ->queue(new DominiosPorRenovar(array_values($aNotificar)));
 
                 $this->info('Correo enviado con ' . count($aNotificar) . ' dominios próximos a renovar.');
             } else {
