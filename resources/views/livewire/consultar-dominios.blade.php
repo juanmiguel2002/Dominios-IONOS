@@ -28,6 +28,12 @@
                 <option value="desc">Ordenar por renovación ↓</option>
             </select>
 
+            <select wire:model.live="sortN"
+                    class="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-white">
+                <option value="desc">Ordenar por nombre ↓</option>
+                <option value="asc">Ordenar por nombre ↑</option>
+            </select>
+
             <button wire:click="resetFiltros" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 px-4 py-2 rounded-md transition">
                 Resetear filtros
             </button>
@@ -38,7 +44,7 @@
             <table class="min-w-full border border-gray-300 dark:border-gray-700 text-sm text-left ">
                 <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                     <tr>
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Dominio</th>
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 cursor-pointer" wire:model.live="sort">Dominio</th>
                         <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">TLD</th>
                         <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Fecha de renovación</th>
                     </tr>
@@ -46,7 +52,7 @@
                 <tbody class="text-gray-900 dark:text-gray-100">
                     @forelse ($dominios as $dominio)
                         @php
-                        $fechaRenovacion = \Carbon\Carbon::parse($dominio['status']['provisioningStatus']['setToRenewOn']);
+                        $fechaRenovacion = \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn']);
                         $diasRestantes = now()->diffInDays($fechaRenovacion, false);
                         $filaAlerta = $diasRestantes <= 30 ? 'bg-red-50 dark:bg-red-900/30 hover:text-red-200!important' : '';
                     @endphp
