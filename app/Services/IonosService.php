@@ -17,7 +17,7 @@ class IonosService
         if ($response->failed()) {
             throw new \Exception('Error al obtener los dominios: ' . $data['message'] ?? 'Error desconocido');
         }
-        //dd($data['domains'][0]['status']['provisioningStatus']['setToRenewOn']);d
+
         return collect($data['domains']);
     }
 

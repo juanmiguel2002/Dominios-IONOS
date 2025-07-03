@@ -22,19 +22,17 @@
                 @endforeach
             </select>
 
-            <select wire:model.live="sort"
-                    class="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-white">
-                <option value="asc">Ordenar por renovación ↑</option>
-                <option value="desc">Ordenar por renovación ↓</option>
+            <select wire:model.live="sortField" class="border px-3 py-2 rounded">
+                <option value="renovacion">Ordenar por renovación</option>
+                <option value="name">Ordenar por nombre</option>
             </select>
 
-            <select wire:model.live="sortN"
-                    class="border border-gray-300 dark:border-gray-600 px-3 py-2 rounded-md focus:outline-none dark:bg-gray-800 dark:text-white">
-                <option value="desc">Ordenar por nombre ↓</option>
-                <option value="asc">Ordenar por nombre ↑</option>
+            <select wire:model="sortDirection" class="border px-3 py-2 rounded">
+                <option value="asc">Ascendente ↑</option>
+                <option value="desc">Descendente ↓</option>
             </select>
 
-            <button wire:click="resetFiltros" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 px-4 py-2 rounded-md transition">
+            <button wire:click="resetFiltros" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 px-4 py-2 rounded-md transition cursor-pointer">
                 Resetear filtros
             </button>
         </div>
@@ -44,7 +42,7 @@
             <table class="min-w-full border border-gray-300 dark:border-gray-700 text-sm text-left ">
                 <thead class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                     <tr>
-                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2 cursor-pointer" wire:model.live="sort">Dominio</th>
+                        <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Dominio</th>
                         <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">TLD</th>
                         <th class="border border-gray-300 dark:border-gray-700 px-4 py-2">Fecha de renovación</th>
                     </tr>

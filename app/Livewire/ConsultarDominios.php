@@ -14,22 +14,22 @@ class ConsultarDominios extends Component
 
     public $search = '';
     public $limit = 25;
-    public $sort = 'asc';
-    public $sortN = 'asc';
+    public $sortDirection = 'desc'; // 'asc' o 'desc'
+    public $sortField = 'renovacion'; // 'name' o 'renewal'
     public $error = null;
     public $page = 1;
 
     protected $queryString = [
         'search' => ['except' => ''],
         'limit' => ['except' => 25],
-        'sort' => ['except' => 'asc'],
-        'sortN' => ['except' => 'asc'],
+        'sortDirection' => ['except' => 'desc'],
+        'sortField' => ['except' => 'renovacion'],
         'page' => ['except' => 1],
     ];
 
     public function updating($property)
     {
-        if (in_array($property, ['search', 'limit', 'sort', 'sortN'])) {
+        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField'])) {
             $this->resetPage();
         }
     }
@@ -42,27 +42,21 @@ class ConsultarDominios extends Component
             $this->error = $e->getMessage();
             return view('livewire.consultar-dominios', ['dominios' => collect()]);
         }
-        //dd($domains);
-        // Buscar por nombre
+
+        // Filtrar por búsqueda
         if ($this->search) {
             $domains = $domains->filter(fn($d) => str_contains(strtolower($d['name']), strtolower($this->search)));
         }
 
-        // Ordenar por fecha de renovación
-        $domains = $domains->sortBy(fn($d) =>
-            $d['status']['provisioningStatus']['setToRenewOn'] ?? null,
-            SORT_REGULAR,
-            $this->sort === 'desc'
-        );
+        // Ordenar por campo seleccionado
+        $domains = $domains->sortBy(function ($d) {
+            if ($this->sortField === 'name') {
+                return strtolower($d['name']);
+            }
+            return $d['provisioningStatus']['setToRenewOn'] ?? null;
+        }, SORT_REGULAR, $this->sortDirection === 'asc');
 
-        $domains = $domains->sortBy(fn($d) =>
-            $d['name'] ?? null,
-            SORT_REGULAR,
-            $this->sortN === 'desc'
-        );
-
-
-        // Paginar manualmente
+        // Paginación manual
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $items = $domains->slice(($currentPage - 1) * $this->limit, $this->limit)->values();
         $paginator = new LengthAwarePaginator(
@@ -74,6 +68,11 @@ class ConsultarDominios extends Component
         );
 
         return view('livewire.consultar-dominios', ['dominios' => $paginator]);
+    }
+
+    public function resetFiltros()
+    {
+        $this->reset(['search', 'limit', 'sortField', 'page', 'sortDirection']);
     }
 
     private function paginateCollection($items, $perPage)
@@ -88,10 +87,6 @@ class ConsultarDominios extends Component
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
-    }
-    public function resetFiltros()
-    {
-        $this->reset(['search', 'limit', 'sort', 'page', 'sortN']);
     }
 
 }
