@@ -15,6 +15,7 @@ class ConsultarDominios extends Component
     public $search = '';
     public $limit = 25;
     public $sort = 'asc';
+    public $sortN = 'asc';
     public $error = null;
     public $page = 1;
 
@@ -22,19 +23,15 @@ class ConsultarDominios extends Component
         'search' => ['except' => ''],
         'limit' => ['except' => 25],
         'sort' => ['except' => 'asc'],
+        'sortN' => ['except' => 'asc'],
         'page' => ['except' => 1],
     ];
 
     public function updating($property)
     {
-        if (in_array($property, ['search', 'limit', 'sort'])) {
+        if (in_array($property, ['search', 'limit', 'sort', 'sortN'])) {
             $this->resetPage();
         }
-    }
-
-    public function resetFiltros()
-    {
-        $this->reset(['search', 'limit', 'sort', 'page']);
     }
 
     public function render(IonosService $ionos)
@@ -45,7 +42,7 @@ class ConsultarDominios extends Component
             $this->error = $e->getMessage();
             return view('livewire.consultar-dominios', ['dominios' => collect()]);
         }
-
+        //dd($domains);
         // Buscar por nombre
         if ($this->search) {
             $domains = $domains->filter(fn($d) => str_contains(strtolower($d['name']), strtolower($this->search)));
@@ -57,6 +54,13 @@ class ConsultarDominios extends Component
             SORT_REGULAR,
             $this->sort === 'desc'
         );
+
+        $domains = $domains->sortBy(fn($d) =>
+            $d['name'] ?? null,
+            SORT_REGULAR,
+            $this->sortN === 'desc'
+        );
+
 
         // Paginar manualmente
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -85,4 +89,9 @@ class ConsultarDominios extends Component
             ['path' => request()->url(), 'query' => request()->query()]
         );
     }
+    public function resetFiltros()
+    {
+        $this->reset(['search', 'limit', 'sort', 'page', 'sortN']);
+    }
+
 }
