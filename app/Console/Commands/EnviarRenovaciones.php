@@ -25,21 +25,18 @@ class EnviarRenovaciones extends Command
                 if (!$fechaRenovacion) continue;
 
                 $fecha = Carbon::parse($fechaRenovacion);
-                if ($fecha->isSameDay(Carbon::now()->addDays(30))) {
+                if ($fecha->isSameDay(Carbon::now()->addDays(15))) {
                     $nombreDominio = $dominio['name'];
 
                     // Envía el correo
-                    Mail::to('web@ivarscomagenciadepublicidad.com',)
+                    Mail::to('web@ivarscomagenciadepublicidad.com')
                         ->send(new RenovacionDominio($nombreDominio, $fecha));
 
                     $this->info("Correo enviado para el dominio: {$nombreDominio}");
                 }
             }
-
-            return Command::SUCCESS;
         } catch (\Throwable $e) {
             $this->error("Error: " . $e->getMessage());
-            return Command::FAILURE;
         }
     }
 }
