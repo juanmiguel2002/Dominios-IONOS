@@ -46,7 +46,7 @@ class IonosService
         if ($response->failed()) {
             throw new \Exception('Error al obtener el dominio: ' . ($data['message'] ?? 'Error desconocido'));
         }
-        //dd($data['registrant']['postalInfo']['address']['postalCode']);
+
         // Puedes ajustar el tipo de contacto que quieres (adminContact, ownerContact, etc.)
         return $data['registrant'] ?? [];
     }
