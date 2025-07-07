@@ -46,10 +46,9 @@ class ConsultarDominio extends Component
             session()->flash('error', 'No se encontró un email de contacto para el dominio');
             return;
         }
-        $user = auth()->user();
-        //dd($user->email);
-        $envio = Mail::to($user->email, 'Admin dominio')->queue(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
-        //dd($envio);
+
+        $envio = Mail::to('web@ivarscomagenciadepublicidad.com', 'Admin dominio')->queue(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
+        
         // Verificar si el envío fue exitoso
         if (!$envio) {
             session()->flash('error', 'Error al enviar la notificación: ');
