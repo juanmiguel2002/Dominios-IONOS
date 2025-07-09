@@ -12,7 +12,11 @@ class DominioController extends Controller
     //
     public function index(Request $request)
     {
-        return view('dominio', ['id' => $request->id]);
+
+        $ionos = new IonosService();
+        $dominio = $ionos->obtenerDetallesDominio($request->id);
+        $contacto = $ionos->obtenerContactoDominio($request->id);
+        return view('dominio', ['id' => $request->id, 'dominio' => $dominio, 'contacto' => $contacto]);
     }
 
     public function enviarEmail($id)
