@@ -20,7 +20,7 @@ class DominioController extends Controller
         $ionos = new IonosService();
         $dominio = $ionos->obtenerDetallesDominio($id);
 
-        $to_email = 'juanmi0802@gmail.com'; // Puedes hacerlo dinámico si lo necesitas
+        $to_email = 'web@ivarscomagenciadepublicidad.com'; // Puedes hacerlo dinámico si lo necesitas
 
         Mail::to($to_email)->send(
             new RenovacionDominio($dominio['name'], $dominio['expirationDate'])
