@@ -23,7 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
     Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
-    Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])->name('enviar.email');
+    Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])->name('enviar');
     Route::get('/users', [UsersController::class, 'index'])->name('users');
 });
 
