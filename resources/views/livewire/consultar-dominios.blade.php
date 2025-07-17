@@ -76,7 +76,7 @@
                                 @endif
                             </td>
                             <td class="border p-2 dark:border-gray-700">{{ $dominio['tld'] }}</td>
-                            <td class="border p-2 dark:border-gray-700 flex align-center gap-2">
+                            <td class="border p-2 dark:border-gray-700 flex items-center gap-2">
                                 {{ \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn'] ?? now())->format('d/m/Y') }}
                                 @if (!$estado)
                                     @if ($diasRestantes <= 30)
