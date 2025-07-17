@@ -11,13 +11,12 @@ class IonosService
     {
         $response = Http::withHeaders([
             'X-Api-Key' => config('services.ionos.key'),
-        ])->acceptJson()->get('https://api.hosting.ionos.com/domains/v1/domainitems/domains?includeProvisioningStatus=true');
+        ])->acceptJson()->get('https://api.hosting.ionos.com/domains/v1/domainitems/domains?includeProvisioningStatus=true&pendingProvisioning=false');
 
         $data = $response->json();
         if ($response->failed()) {
             throw new \Exception('Error al obtener los dominios: ' . $data['message'] ?? 'Error desconocido');
         }
-
         return collect($data['domains']);
     }
 

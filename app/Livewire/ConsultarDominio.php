@@ -2,9 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Mail\RenovacionDominio;
 use App\Services\IonosService;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ConsultarDominio extends Component
@@ -25,38 +23,6 @@ class ConsultarDominio extends Component
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
         }
-    }
-
-    public function mostrarContacto()
-    {
-        $this->dispatch('mostrarContacto', $this->id);
-    }
-
-    public function enviarNotificacion()
-    {
-
-        if (!$this->dominio) {
-            session()->flash('error', 'Dominio no encontrado');
-            return;
-        }
-
-        $nombre = $this->dominio['name'];
-        $email = $this->contacto['email'] ?? null;
-        if (!$email) {
-            session()->flash('error', 'No se encontró un email de contacto para el dominio');
-            return;
-        }
-
-        $envio = Mail::to('web@ivarscomagenciadepublicidad.com', 'Admin dominio')->queue(new RenovacionDominio($nombre, $this->dominio['expirationDate']));
-        
-        // Verificar si el envío fue exitoso
-        if (!$envio) {
-            session()->flash('error', 'Error al enviar la notificación: ');
-            return;
-        }
-
-        // Despachar evento de éxito
-        session()->flash('success', 'Notificación enviada correctamente');
     }
 
     public function render()
