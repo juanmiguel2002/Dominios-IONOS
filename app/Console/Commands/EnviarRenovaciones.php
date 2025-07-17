@@ -25,7 +25,7 @@ class EnviarRenovaciones extends Command
                 if (!$fechaRenovacion) continue;
 
                 $fecha = Carbon::parse($fechaRenovacion);
-                if ($fecha->isSameDay(Carbon::now()->addDays(15))) {
+                if ($fecha->isSameDay(Carbon::now()->addDays(30))) {
                     $nombreDominio = $dominio['name'];
 
                     // Envía el correo
