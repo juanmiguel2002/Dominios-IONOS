@@ -90,4 +90,8 @@ class ConsultarDominios extends Component
             ['path' => request()->url(), 'query' => request()->query()]
         );
     }
+    
+    public function estadoDominio(){
+        $this->estado = true;
+    }
 }

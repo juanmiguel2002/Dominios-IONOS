@@ -32,7 +32,7 @@
                 <option value="desc">Descendente ↓</option>
             </select>
 
-            <button wire:click="$toggle('estado')" type="button"
+            <button wire:click="estadoDominio" type="button"
                 class="px-4 py-2 rounded text-sm font-semibold border cursor-pointer
                     {{ $estado ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' }}">
                 {{ $estado ? 'Ver todos' : 'Ver solo transfiriendo' }}
@@ -78,15 +78,17 @@
                             <td class="border p-2 dark:border-gray-700">{{ $dominio['tld'] }}</td>
                             <td class="border p-2 dark:border-gray-700 flex gap-2">
                                 {{ \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn'] ?? now())->format('d/m/Y') }}
-                                @if ($diasRestantes <= 30)
-                                    <span title="Este dominio vence en {{ $diasRestantes }} días"
-                                        class="text-red-600 dark:text-red-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4m0 4h.01M5.07 19h13.86c1.1 0 1.68-1.27 1.06-2.13L13.06 4.87a1.25 1.25 0 00-2.12 0L4.01 16.87c-.62.86-.04 2.13 1.06 2.13z" />
-                                        </svg>
-                                    </span>
+                                @if (!$estado)
+                                    @if ($diasRestantes <= 30)
+                                        <span title="Este dominio vence en {{ $diasRestantes }} días"
+                                            class="text-red-600 dark:text-red-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 8v4m0 4h.01M5.07 19h13.86c1.1 0 1.68-1.27 1.06-2.13L13.06 4.87a1.25 1.25 0 00-2.12 0L4.01 16.87c-.62.86-.04 2.13 1.06 2.13z" />
+                                            </svg>
+                                        </span>
+                                    @endif
                                 @endif
                             </td>
                             <td class="border p-2 dark:border-gray-700">
