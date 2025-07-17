@@ -18,6 +18,7 @@ class ConsultarDominios extends Component
     public $sortField = 'renovacion'; // 'name' o 'renewal'
     public $error = null;
     public $page = 1;
+    public $estado = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -25,11 +26,12 @@ class ConsultarDominios extends Component
         'sortDirection' => ['except' => 'desc'],
         'sortField' => ['except' => 'renovacion'],
         'page' => ['except' => 1],
+        'estado' => ['except' => 'false']
     ];
 
     public function updating($property)
     {
-        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField'])) {
+        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField', 'estado'])) {
             $this->resetPage();
         }
     }
@@ -37,7 +39,7 @@ class ConsultarDominios extends Component
     public function render(IonosService $ionos)
     {
         try {
-            $domains = $ionos->obtenerDominios();
+            $domains = $ionos->obtenerDominios($this->estado);
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
             return view('livewire.consultar-dominios', ['dominios' => collect()]);
@@ -72,7 +74,7 @@ class ConsultarDominios extends Component
 
     public function resetFiltros()
     {
-        $this->reset(['search', 'limit', 'sortField', 'page', 'sortDirection']);
+        $this->reset(['search', 'limit', 'sortField', 'page', 'sortDirection', 'estado']);
     }
 
     private function paginateCollection($items, $perPage)
@@ -88,5 +90,4 @@ class ConsultarDominios extends Component
             ['path' => request()->url(), 'query' => request()->query()]
         );
     }
-
 }
