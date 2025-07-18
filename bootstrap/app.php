@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         //
     })
+    ->withCommands([
+        __DIR__.'/app/Console/Commands/EnviarRenovaciones',
+    ])
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
