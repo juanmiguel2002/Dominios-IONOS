@@ -15,7 +15,7 @@
                     @forelse ($hosting as $host)
                         <tr class="dark:hover:bg-gray-700 hover:bg-gray-100">
                             <td class="border p-2 dark:border-gray-700">{{$host['name']}}</td>
-                            <td class="border p-2 dark:border-gray-700">{{$host['created']}}</td>
+                            <td class="border p-2 dark:border-gray-700">{{\Carbon\Carbon::parse($host['created'])->format('d/m/Y')}}</td>
                             <td class="border p-2 dark:border-gray-700">
                                 @php
                                     $estado = $plesk->estado($host['id']);
