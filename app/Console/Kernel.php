@@ -23,10 +23,10 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule) : void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('dominios:enviar-renovaciones')->dailyAt('08:00'); // cada día a las 08:00
+        $schedule->command('dominios:enviar-renovaciones')->daily(); // cada día a las 08:00
     }
 
     /**

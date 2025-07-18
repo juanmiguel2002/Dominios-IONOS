@@ -15,26 +15,32 @@ class EnviarRenovaciones extends Command
 
     public function handle(IonosService $ionos)
     {
-        $this->info('Ejecutando comando...');
+        $this->info('Ejecutando revisión de dominios...');
+
         try {
             $dominios = $ionos->obtenerDominios();
 
             foreach ($dominios as $dominio) {
                 $fechaRenovacion = $dominio['provisioningStatus']['setToRenewOn'] ?? null;
 
-                if (!$fechaRenovacion) continue;
+                if (!$fechaRenovacion) {
+                    $this->warn("Dominio {$dominio['name']} no tiene fecha de renovación.");
+                    continue;
+                }
 
                 $fecha = Carbon::parse($fechaRenovacion);
-                if ($fecha->isSameDay(Carbon::now()->addDays(30))) {
+                $diasRestantes = now()->diffInDays($fecha, false); // negativo si ya pasó
+
+                if (in_array($diasRestantes, [30, 15, 5])) {
                     $nombreDominio = $dominio['name'];
 
-                    // Envía el correo
                     Mail::to('web@ivarscomagenciadepublicidad.com')
-                        ->send(new RenovacionDominio($nombreDominio, $fecha));
+                        ->send(new RenovacionDominio($nombreDominio, $fecha, $diasRestantes));
 
-                    $this->info("Correo enviado para el dominio: {$nombreDominio}");
+                    $this->info("Correo enviado para el dominio: {$nombreDominio} (quedan {$diasRestantes} días)");
                 }
             }
+
         } catch (\Throwable $e) {
             $this->error("Error: " . $e->getMessage());
         }
