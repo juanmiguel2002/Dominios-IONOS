@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DominioController;
+use App\Http\Controllers\Hosting;
 use App\Http\Controllers\UsersController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -24,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
     Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])->name('enviar');
+    Route::get('/hosting', [Hosting::class, 'index'])->name('hosting');
     Route::get('/users', [UsersController::class, 'index'])->name('users');
 });
 

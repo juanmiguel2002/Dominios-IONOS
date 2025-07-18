@@ -38,4 +38,10 @@ return [
         'key' => env('API_KEY'),
     ],
 
+    'plesk' => [
+        'host' => env('HOST'),
+        'username' => env('USERNAME'),
+        'password' => env('PASSWORD')
+    ]
+
 ];
