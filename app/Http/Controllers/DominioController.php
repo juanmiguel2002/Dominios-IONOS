@@ -6,6 +6,8 @@ use App\Mail\RenovacionDominio;
 use App\Services\IonosService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class DominioController extends Controller
 {
@@ -21,11 +23,28 @@ class DominioController extends Controller
 
     public function enviarEmail($id)
     {
-        $ionos = new IonosService();
-        $dominio = $ionos->obtenerDetallesDominio($id);
+        try {
+            $ionos = new IonosService();
+            $dominio = $ionos->obtenerDetallesDominio($id);
 
-        Mail::to('web@ivarscomagenciadepublicidad.com')->send(new RenovacionDominio($dominio['name'], $dominio['expirationDate']));
+            if (!$dominio || empty($dominio['name']) || empty($dominio['expirationDate'])) {
+                return redirect()->back()->with('error', 'No se pudo obtener la información del dominio.');
+            }
 
-        return redirect()->back()->with('success', 'Correo enviado correctamente.');
+            $nombre = $dominio['name'];
+            $fecha = Carbon::parse($dominio['expirationDate']);
+            $diasRestantes = now()->diffInDays($fecha, false); // puede ser negativo
+
+            Mail::to('web@ivarscomagenciadepublicidad.com')
+                ->send(new RenovacionDominio($nombre, $fecha, $diasRestantes));
+
+            Log::info("Correo enviado para el dominio: {$nombre}");
+
+            return redirect()->back()->with('success', "Correo enviado para el dominio {$nombre}.");
+
+        } catch (\Throwable $e) {
+            Log::error("Error al enviar correo para dominio ID {$id}: " . $e->getMessage());
+            return redirect()->back()->with('error', 'Hubo un error al enviar el correo.');
+        }
     }
 }
