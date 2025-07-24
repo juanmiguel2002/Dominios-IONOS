@@ -22,7 +22,7 @@ class RenovacionDominio extends Mailable
     }
     public function build(): self
     {
-        return $this->subject('Renovación del Dominio {{$this->dominio}}')
+        return $this->subject('Renovación del Dominio '.$this->dominio)
                     ->view('emails.renovacion');
     }
 }
