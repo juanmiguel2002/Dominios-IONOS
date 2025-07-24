@@ -20,9 +20,9 @@ class RenovacionDominio extends Mailable
         $this->fecha = $fecha;
         $this->diasRestantes = $diasRestantes;
     }
-    public function build()
+    public function build(): self
     {
-        return $this->subject('Correo desde Livewire')
+        return $this->subject('Renovación del Dominio {{$this->dominio}}')
                     ->view('emails.renovacion');
     }
 }
