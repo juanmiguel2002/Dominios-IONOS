@@ -29,7 +29,7 @@ class EnviarRenovaciones extends Command
                 }
 
                 $fecha = Carbon::parse($fechaRenovacion);
-                $diasRestantes = now()->diffInDays($fecha, false); // negativo si ya pasó
+                $diasRestantes = now()->diffInDays($fecha, true); // negativo si ya pasó
 
                 if (in_array($diasRestantes, [30, 15, 5])) {
                     $nombreDominio = $dominio['name'];
