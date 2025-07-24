@@ -20,7 +20,7 @@
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
-                    Le informamos que el dominio <strong>{{ $dominio }}</strong> está programado para renovarse el día <strong>{{ $fecha->format('d/m/Y') }}</strong>.
+                    Le informamos que el dominio <strong>{{ $dominio }}</strong> está programado para renovarse el día <strong>{{ $fecha }}</strong>.
                 </p>
                 <p>Faltan <strong>{{ $diasRestantes }}</strong> días para la renovación.</p>
 
