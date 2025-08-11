@@ -34,7 +34,8 @@ class EnviarRenovaciones extends Command
                 if (in_array($diasRestantes, [30, 15, 5])) {
                     $nombreDominio = $dominio['name'];
 
-                    Mail::to('info@ivarscom.com')->cc('web@ivarscomagenciadepublicidad.com')
+                    Mail::to('info@ivarscom.com')
+                        ->cc('web@ivarscomagenciadepublicidad.com')
                         ->send(new RenovacionDominio($nombreDominio, $fecha, $diasRestantes));
 
                     $this->info("Correo enviado para el dominio: {$nombreDominio} (quedan {$diasRestantes} días)");
