@@ -2,10 +2,10 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
-Artisan::command('dominios:enviar-renovaciones', function () {
-    $this->call(\App\Console\Commands\EnviarRenovaciones::class);
-})->describe('Enviar email de renovación 30 días antes de la expiración del dominio');
+
+Schedule::command('dominios:enviar-renovaciones')->dailyAt('09:00');
