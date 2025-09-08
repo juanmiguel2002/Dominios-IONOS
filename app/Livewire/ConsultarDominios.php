@@ -77,20 +77,6 @@ class ConsultarDominios extends Component
         $this->reset(['search', 'limit', 'sortField', 'page', 'sortDirection', 'estado']);
     }
 
-    private function paginateCollection($items, $perPage)
-    {
-        $page = $this->page ?? 1;
-        $items = $items->values(); // reset keys
-
-        return new LengthAwarePaginator(
-            $items->forPage($page, $perPage),
-            $items->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-    }
-
     public function estadoDominio() {
 
         if($this->estado == false){

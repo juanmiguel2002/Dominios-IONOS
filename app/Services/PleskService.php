@@ -13,7 +13,7 @@ class PleskService
 
     public function __construct()
     {
-        $this->baseUrl = config('services.plesk.host'); // ej. https://mi-servidor:8443
+        $this->baseUrl = config('services.plesk.host');
         $this->username = config('services.plesk.username');
         $this->password = config('services.plesk.password');
     }
@@ -28,7 +28,7 @@ class PleskService
 
         $hosting = $response->json();
 
-        return $hosting;
+        return collect($hosting);
     }
 
     public function estado($id) {

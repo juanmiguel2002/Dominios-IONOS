@@ -56,15 +56,15 @@
                 </thead>
                 <tbody class="text-gray-900 dark:text-gray-100">
                     @forelse ($dominios as $dominio)
-                    @php
-                        if(!$estado){
-                            $fechaRenovacion = \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn']);
-                            $diasRestantes = now()->diffInDays($fechaRenovacion, false);
-                            $filaAlerta = $diasRestantes <= 30 ? 'bg-red-50 dark:bg-red-900/30 hover:text-red-200!important' : '';
-                        }else{
-                            $filaAlerta = '';
-                        }
-                    @endphp
+                        @php
+                            if(!$estado){
+                                $fechaRenovacion = \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn']);
+                                $diasRestantes = now()->diffInDays($fechaRenovacion, false);
+                                $filaAlerta = $diasRestantes <= 30 ? 'bg-red-50 dark:bg-red-900/30 hover:text-red-200!important' : '';
+                            }else{
+                                $filaAlerta = '';
+                            }
+                        @endphp
                         <tr class="dark:hover:bg-gray-700 hover:bg-gray-100 {{$filaAlerta}}">
                             <td class="border p-2 dark:border-gray-700">
                                 @if (!$estado)
