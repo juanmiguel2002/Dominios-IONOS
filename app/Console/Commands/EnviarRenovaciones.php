@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Services\IonosService;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\RenovacionDominio;
 use Carbon\Carbon;
 
@@ -21,7 +20,9 @@ class EnviarRenovaciones extends Command
             $dominios = $ionos->obtenerDominios();
 
             foreach ($dominios as $dominio) {
-                $fechaRenovacion = $dominio['provisioningStatus']['setToRenewOn'] ?? null;
+                $fechaRenovacion = $dominio['provisioningStatus']['setToExpireOn']
+                    ?? $dominio['provisioningStatus']['setToRenewOn']
+                    ?? null;
 
                 if (!$fechaRenovacion) {
                     $this->warn("Dominio {$dominio['name']} no tiene fecha de renovación.");
@@ -29,16 +30,23 @@ class EnviarRenovaciones extends Command
                 }
 
                 $fecha = Carbon::parse($fechaRenovacion);
-                $diasRestantes = now()->diffInDays($fecha, true); // negativo si ya pasó
+                $diasRestantes = now()->diffInDays($fecha, false);
+
+                if ($diasRestantes < 0) {
+                    $this->warn("Dominio {$dominio['name']} ya expiró.");
+                    continue;
+                }
 
                 if (in_array($diasRestantes, [30, 15, 5])) {
                     $nombreDominio = $dominio['name'];
 
-                    Mail::to('info@ivarscom.com')
-                        ->cc('web@ivarscomagenciadepublicidad.com')
-                        ->send(new RenovacionDominio($nombreDominio, $fecha, $diasRestantes));
+                    RenovacionDominio::dispatch(
+                        $nombreDominio,
+                        $fecha,
+                        $diasRestantes
+                    );
 
-                    $this->info("Correo enviado para el dominio: {$nombreDominio} (quedan {$diasRestantes} días)");
+                    $this->info("Job de correo encolado para dominio: {$nombreDominio} (quedan {$diasRestantes} días)");
                 }
             }
 
@@ -46,4 +54,5 @@ class EnviarRenovaciones extends Command
             $this->error("Error: " . $e->getMessage());
         }
     }
+
 }
