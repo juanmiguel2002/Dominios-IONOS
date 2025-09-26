@@ -58,8 +58,18 @@
                     @forelse ($dominios as $dominio)
                         @php
                             if(!$estado){
-                                $fechaRenovacion = \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn']);
-                                $diasRestantes = now()->diffInDays($fechaRenovacion, false);
+
+                                $fechaMostrar = null;
+                                $expira = $dominio['provisioningStatus']['setToExpireOn'] ?? null;
+                                $renueva = $dominio['provisioningStatus']['setToRenewOn'] ?? null;
+
+                                if ($expira) {
+                                    $fechaMostrar = \Carbon\Carbon::parse($expira);
+                                } elseif ($renueva) {
+                                    $fechaMostrar = \Carbon\Carbon::parse($renueva);
+                                }
+
+                                $diasRestantes = now()->diffInDays($fechaMostrar, false);
                                 $filaAlerta = $diasRestantes <= 30 ? 'bg-red-50 dark:bg-red-900/30 hover:text-red-200!important' : '';
                             }else{
                                 $filaAlerta = '';
@@ -77,20 +87,31 @@
                             </td>
                             <td class="border p-2 dark:border-gray-700">{{ $dominio['tld'] }}</td>
                             <td class="border p-2 dark:border-gray-700 flex items-center gap-2">
-                                {{ \Carbon\Carbon::parse($dominio['provisioningStatus']['setToRenewOn'] ?? now())->format('d/m/Y') }}
-                                @if (!$estado)
-                                    @if ($diasRestantes <= 30)
-                                        <span title="Este dominio vence en {{ $diasRestantes }} días"
-                                            class="text-red-600 dark:text-red-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 8v4m0 4h.01M5.07 19h13.86c1.1 0 1.68-1.27 1.06-2.13L13.06 4.87a1.25 1.25 0 00-2.12 0L4.01 16.87c-.62.86-.04 2.13 1.06 2.13z" />
-                                            </svg>
-                                        </span>
+                                @if ($fechaMostrar)
+                                    {{ $fechaMostrar->format('d/m/Y') }}
+
+                                    @if (!$estado)
+                                        @php
+                                            $diasRestantes = now()->diffInDays($fechaMostrar, false);
+                                        @endphp
+                                        @if ($diasRestantes <= 30)
+                                            <span title="Este dominio vence en {{ $diasRestantes }} días"
+                                                class="text-red-600 dark:text-red-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 8v4m0 4h.01M5.07 19h13.86c1.1 0 1.68-1.27 1.06-2.13L13.06 4.87a1.25 1.25 0 00-2.12 0L4.01 16.87c-.62.86-.04 2.13 1.06 2.13z" />
+                                                </svg>
+                                            </span>
+                                        @endif
                                     @endif
+                                @else
+                                    <span class="text-gray-400 dark:text-gray-600">
+                                        Sin fecha de renovación
+                                    </span>
                                 @endif
                             </td>
+
                             <td class="border p-2 dark:border-gray-700">
                                 @php
                                     $pending = $dominio['provisioningStatus']['type'] ?? false;
