@@ -43,7 +43,7 @@ class EnviarRenovaciones extends Command
                 //$this->info("Dominio: {$dominio['name']} - Fecha renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes}");
 
                 // Si faltan exactamente 30 días
-                if ($diasRestantes === 30 || $diasRestantes <= 10) {
+                if ($diasRestantes === 30) {
                     try {
                         $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('info@ivarscom.com');
 
@@ -51,7 +51,7 @@ class EnviarRenovaciones extends Command
                             $mail->cc($emailTitular);
                         }
 
-                        $mail->send(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
+                        $mail->queue(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
 
                         $this->info("✅ Email de renovación enviado para el dominio {$dominio['name']}.");
                     } catch (\Throwable $mailError) {
