@@ -22,7 +22,7 @@
                 <p style="font-size: 16px; color: #333;">
                     Le informamos que el dominio <strong>{{ $dominio }}</strong> está programado para renovarse el día <strong>{{ $fecha->format('d/m/Y') }}</strong>.
                 </p>
-                <p>Cualquier duda por favor avisen 20 días antes del día de renovación..</p>
+                <p style="font-size: 16px; color: #333;">Cualquier duda por favor avisen 20 días antes del día de renovación..</p>
 
                 <p style="font-size: 16px; color: #333;">
                     Si no recibimos una respuesta o contacto por su parte antes de esa fecha,
@@ -32,7 +32,7 @@
                 <p style="font-size: 16px; color: #333;">
                     Si desea realizar alguna modificación o no desea continuar con la renovación, por favor, póngase en contacto con nosotros.
                 </p>
-                <p style="font-size: 12px; color: #333;">
+                <p style="font-size: 15px; color: #333;">
                     <strong>Nota:</strong> En caso de no comunicar la baja del dominio, IVARSCOM AGENCIA DE PUBLICIDAD, generarà la factura automáticamente.
                 </p>
 
@@ -41,11 +41,16 @@
                 </p>
 
                 <p style="font-size: 14px; color: #333;">
-                    Atentamente,<strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
+                    Atentamente, <strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
                     Departamento web - <a href="mailto:web@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">web@ivarscomagenciadepublicidad.com</a><br>
                     Departamento de administración - <a href="mailto:admin@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">admin@ivarscomagenciadepublicidad.com</a>
                     <br>Tel. 644 28 06 05
                 </p>
+                <small style="color: #7d7d7d">AVISO LEGAL
+                    Este mensaje y sus ficheros adjuntos tienen carácter privado y confidencial y van dirigidos exclusivamente a sus destinatarios.
+                    Si ha recibido este mensaje por error, no debe revelarlo, copiarlo o distribuirlo en ningún sentido sin previo consentimiento por escrito de Ivarscom Agencia de Publicidad S.L.U.
+                    Rogamos lo comunique al remitente y elimine dicho mensaje y cualquier documento adjunto que pudiera contener. De no hacerlo así puede vulnerar la legislación vigente.
+                </small>
             </td>
         </tr>
     </table>
