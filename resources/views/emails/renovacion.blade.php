@@ -9,9 +9,13 @@
     <table width="100%" style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px;">
         <tr>
             <td style="text-align: center;">
-                <img src="{{ asset('storage/icon.png') }}" alt="IVARSCOM" style="max-width: 200px; margin-bottom: 20px;">
+                <div style="display: inline-flex; align-items: center; gap: 10px;">
+                    <img src="{{ asset('storage/icon.png') }}" alt="IVARSCOM" style="max-width: 60px;">
+                    <span style="font-size: 20px; font-weight: bold; color: #333;">IVARSCOM</span>
+                </div>
             </td>
         </tr>
+
 
         <tr>
             <td style="text-align: justify;">
