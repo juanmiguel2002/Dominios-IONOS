@@ -47,7 +47,7 @@
                     <br>Tel. <a href="tel:620 72 54 60" style="text-decoration: none; color: #333">620 72 54 60</a>
                 </p>
                 <hr />
-                <small style="color: #7d7d7d">AVISO LEGAL
+                <small style="color: #7d7d7d">AVISO LEGAL<br>
                     Este mensaje y sus ficheros adjuntos tienen carácter privado y confidencial y van dirigidos exclusivamente a sus destinatarios.
                     Si ha recibido este mensaje por error, no debe revelarlo, copiarlo o distribuirlo en ningún sentido sin previo consentimiento por escrito de Ivarscom Agencia de Publicidad S.L.U.
                     Rogamos lo comunique al remitente y elimine dicho mensaje y cualquier documento adjunto que pudiera contener. De no hacerlo así puede vulnerar la legislación vigente.
