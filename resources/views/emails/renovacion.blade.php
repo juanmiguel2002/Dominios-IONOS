@@ -14,7 +14,7 @@
         </tr>
 
         <tr>
-            <td>
+            <td style="text-align: justify;">
                 <p style="font-size: 16px; color: #333;">
                     Estimado/a cliente,
                 </p>
@@ -44,8 +44,9 @@
                     Atentamente, <strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
                     Departamento web - <a href="mailto:web@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">web@ivarscomagenciadepublicidad.com</a><br>
                     Departamento de administración - <a href="mailto:admin@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">admin@ivarscomagenciadepublicidad.com</a>
-                    <br>Tel. <a href="tel:620 72 54 60">620 72 54 60</a>
+                    <br>Tel. <a href="tel:620 72 54 60" style="text-decoration: none; color: #333">620 72 54 60</a>
                 </p>
+                <hr />
                 <small style="color: #7d7d7d">AVISO LEGAL
                     Este mensaje y sus ficheros adjuntos tienen carácter privado y confidencial y van dirigidos exclusivamente a sus destinatarios.
                     Si ha recibido este mensaje por error, no debe revelarlo, copiarlo o distribuirlo en ningún sentido sin previo consentimiento por escrito de Ivarscom Agencia de Publicidad S.L.U.
