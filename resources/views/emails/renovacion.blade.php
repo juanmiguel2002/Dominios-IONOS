@@ -8,20 +8,18 @@
 
     <table width="100%" style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px;">
         <tr>
-            <td style="text-align: center; padding: 20px 0;">
-                <div style="display: inline-block; text-align: center;">
-                    <img src="{{ asset('storage/icon.png') }}" alt="IVARSCOM" style="max-width: 120px; display: block; margin: 0 auto 10px auto;">
-                    <div style="font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">
-                        IVARSCOM
-                    </div>
-                </div>
+            <td style="text-align: center;">
+                <img src="{{ asset('storage/logo-ivars.png') }}" alt="IVARSCOM" style="max-width: 200px; margin-bottom: 20px;">
             </td>
         </tr>
 
         <tr>
             <td style="text-align: justify;">
                 <p style="font-size: 16px; color: #333;">
-                    Estimado/a cliente,<br>
+                    Estimado/a cliente,
+                </p>
+
+                <p style="font-size: 16px; color: #333;">
                     Le informamos que el dominio <strong>{{ $dominio }}</strong> está programado para renovarse el día <strong>{{ $fecha->format('d/m/Y') }}</strong>.
                 </p>
                 <p style="font-size: 16px; color: #333;">Cualquier duda por favor avisen 20 días antes del día de renovación..</p>
