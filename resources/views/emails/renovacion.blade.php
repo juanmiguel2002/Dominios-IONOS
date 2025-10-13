@@ -8,15 +8,16 @@
 
     <table width="100%" style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px;">
         <tr>
-            <td style="text-align: center;">
-                <div style="display: inline-flex; align-items: center; gap: 10px;">
-                    <img src="{{ asset('storage/icon.png') }}" alt="IVARSCOM" style="max-width: 60px;">
-                    <span style="font-size: 20px; font-weight: bold; color: #333;">IVARSCOM</span>
+            <td style="text-align: center; padding: 20px 0;">
+                <div style="display: inline-block; text-align: center;">
+                    <img src="{{ asset('storage/icon.png') }}" alt="IVARSCOM" style="max-width: 200px; display: block; margin: 0 auto 10px auto;">
+                    <div style="font-size: 18px; font-weight: bold; color: #333; font-family: Arial, sans-serif;">
+                        IVARSCOM
+                    </div>
                 </div>
             </td>
         </tr>
-
-
+        
         <tr>
             <td style="text-align: justify;">
                 <p style="font-size: 16px; color: #333;">
