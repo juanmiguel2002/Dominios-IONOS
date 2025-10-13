@@ -44,7 +44,7 @@
                     Atentamente, <strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
                     Departamento web - <a href="mailto:web@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">web@ivarscomagenciadepublicidad.com</a><br>
                     Departamento de administración - <a href="mailto:admin@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">admin@ivarscomagenciadepublicidad.com</a>
-                    <br>Tel. 644 28 06 05
+                    <br>Tel. <a href="tel:620 72 54 60">620 72 54 60</a>
                 </p>
                 <small style="color: #7d7d7d">AVISO LEGAL
                     Este mensaje y sus ficheros adjuntos tienen carácter privado y confidencial y van dirigidos exclusivamente a sus destinatarios.
