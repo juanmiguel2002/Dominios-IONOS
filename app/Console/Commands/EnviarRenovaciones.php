@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Services\IonosService;
 use App\Mail\RenovacionDominio;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class EnviarRenovaciones extends Command
 {
@@ -29,29 +30,43 @@ class EnviarRenovaciones extends Command
                     continue;
                 }
 
-                $fecha = Carbon::parse($fechaRenovacion);
-                $diasRestantes = now()->diffInDays($fecha, false);
+                $fecha = Carbon::parse($fechaRenovacion)->startOfDay();
+                $hoy = now()->startOfDay();
+                $diasRestantes = $hoy->diffInDays($fecha, false);
 
-                if ($diasRestantes < 0) {
-                    $this->warn("Dominio {$dominio['name']} ya expiró.");
-                    continue;
+                $contact = $ionos->obtenerContactoDominio($dominio['id'] ?? null);
+                $emailTitular = $contact['email'] ?? '';
+
+
+                // Mostrar información de seguimiento
+                $this->info("Dominio {$dominio['name']} - Fecha renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes} - Email titular: {$emailTitular}");
+                //$this->info("Dominio: {$dominio['name']} - Fecha renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes}");
+
+                // Si faltan exactamente 30 días
+                if ($diasRestantes === 30 || $diasRestantes <= 10) {
+                    try {
+                        $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('info@ivarscom.com');
+
+                        if (!empty($emailTitular)) {
+                            $mail->cc($emailTitular);
+                        }
+
+                        $mail->send(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
+
+                        $this->info("✅ Email de renovación enviado para el dominio {$dominio['name']}.");
+                    } catch (\Throwable $mailError) {
+                        $this->error("❌ Error enviando email para {$dominio['name']}: " . $mailError->getMessage());
+                    }
                 }
 
-                if (in_array($diasRestantes, [30, 15, 5])) {
-                    $nombreDominio = $dominio['name'];
-
-                    RenovacionDominio::dispatch(
-                        $nombreDominio,
-                        $fecha,
-                        $diasRestantes
-                    );
-
-                    $this->info("Job de correo encolado para dominio: {$nombreDominio} (quedan {$diasRestantes} días)");
+                // Si el dominio ya expiró
+                if ($diasRestantes < 0) {
+                    $this->warn("⚠️ Dominio {$dominio['name']} ya expiró ({$fecha->toDateString()}).");
                 }
             }
 
         } catch (\Throwable $e) {
-            $this->error("Error: " . $e->getMessage());
+            $this->error("Error general: " . $e->getMessage());
         }
     }
 

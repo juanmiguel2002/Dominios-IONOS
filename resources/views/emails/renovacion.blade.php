@@ -22,7 +22,7 @@
                 <p style="font-size: 16px; color: #333;">
                     Le informamos que el dominio <strong>{{ $dominio }}</strong> está programado para renovarse el día <strong>{{ $fecha->format('d/m/Y') }}</strong>.
                 </p>
-                <p>Faltan <strong>{{ $diasRestantes }}</strong> días para la renovación.</p>
+                <p>Cualquier duda por favor avisen 20 días antes del día de renovación..</p>
 
                 <p style="font-size: 16px; color: #333;">
                     Si no recibimos una respuesta o contacto por su parte antes de esa fecha,
@@ -30,18 +30,21 @@
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
-                    Si desea realizar alguna modificación o no desea continuar con la renovación, por favor, póngase en contacto con nuestro informático.
+                    Si desea realizar alguna modificación o no desea continuar con la renovación, por favor, póngase en contacto con nosotros.
+                </p>
+                <p style="font-size: 12px; color: #333;">
+                    <strong>Nota:</strong> En caso de no comunicar la baja del dominio, IVARSCOM AGENCIA DE PUBLICIDAD, generarà la factura automáticamente.
                 </p>
 
                 <p style="font-size: 16px; color: #333;">
                     Gracias por confiar en nuestros servicios.
                 </p>
 
-                <p style="font-size: 16px; color: #333;">
-                    Atentamente,<br>
-                    <strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
-                    <a href="mailto:info@ivarscom.com">info@ivarscom.com</a><br>
-                    Tel. 644 28 06 05
+                <p style="font-size: 14px; color: #333;">
+                    Atentamente,<strong>Ivarscom Agencia de Publicidad S.L.U</strong><br>
+                    Departamento web - <a href="mailto:web@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">web@ivarscomagenciadepublicidad.com</a><br>
+                    Departamento de administración - <a href="mailto:admin@ivarscomagenciadepublicidad.com" style="text-decoration: none; color: #333">admin@ivarscomagenciadepublicidad.com</a>
+                    <br>Tel. 644 28 06 05
                 </p>
             </td>
         </tr>
