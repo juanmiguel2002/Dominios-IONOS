@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\DominioRenovado;
 use Illuminate\Console\Command;
 use App\Services\IonosService;
 use App\Mail\RenovacionDominio;
@@ -51,11 +52,30 @@ class EnviarRenovaciones extends Command
                             $mail->cc($emailTitular);
                         }
 
-                        $mail->queue(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
+                        $mail->send(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
 
                         $this->info("✅ Email de renovación enviado para el dominio {$dominio['name']}.");
                     } catch (\Throwable $mailError) {
                         $this->error("❌ Error enviando email para {$dominio['name']}: " . $mailError->getMessage());
+                    }
+                }
+
+                // 🟩 Día exacto de la renovación → Confirmación de renovación
+                if ($diasRestantes === 0) {
+                    try {
+
+                        $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
+
+                        if ($emailTitular) {
+                            $mail->cc($emailTitular);
+                        }
+
+                        $mail->send(new DominioRenovado($dominio['name'], $fecha));
+
+                        $this->info("✅ Confirmación de renovación enviada para {$dominio['name']}.");
+
+                    } catch (\Throwable $mailError) {
+                        $this->error("❌ Error enviando confirmación para {$dominio['name']}: " . $mailError->getMessage());
                     }
                 }
 
