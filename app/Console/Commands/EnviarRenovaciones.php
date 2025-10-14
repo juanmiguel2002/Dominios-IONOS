@@ -45,7 +45,7 @@ class EnviarRenovaciones extends Command
                 // Si faltan exactamente 30 días
                 if ($diasRestantes === 30) {
                     try {
-                        $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('info@ivarscom.com');
+                        $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
 
                         if (!empty($emailTitular)) {
                             $mail->cc($emailTitular);
