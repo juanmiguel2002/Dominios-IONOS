@@ -56,7 +56,6 @@
                                     {{ ucfirst($estado['status']) }}
                                 </span>
                             </td>
-
                         </tr>
                     @empty
                         <tr>

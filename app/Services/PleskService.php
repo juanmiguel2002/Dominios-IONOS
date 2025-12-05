@@ -10,67 +10,43 @@ class PleskService
     protected $baseUrl;
     protected $username;
     protected $password;
+    protected $verifySsl;
 
     public function __construct()
     {
         $this->baseUrl = config('services.plesk.host');
         $this->username = config('services.plesk.username');
         $this->password = config('services.plesk.password');
+        $this->verifySsl = config('services.plesk.verify_ssl', true);
+    }
+
+    protected function client()
+    {
+        return Http::withBasicAuth($this->username, $this->password)
+            ->withOptions(['verify' => $this->verifySsl])
+            ->acceptJson();
     }
 
     public function obtenerHosting()
     {
-        $response = Http::withHeaders([
-            'Content-Type' => 'text/xml',
-        ])
-        ->withBasicAuth($this->username, $this->password)
-        ->acceptJson()->get($this->baseUrl);
+        $response = $this->client()->get($this->baseUrl . '/api/v2/domains');
 
-        $hosting = $response->json();
+        if (!$response->successful()) {
+            return collect([]);
+        }
 
-        return collect($hosting);
+        $dominios = $response->json();
+
+        //dd(collect($dominios));
+
+        return collect($dominios);
     }
 
-    public function estado($id) {
-        $response = Http::withHeaders([
-            'Content-Type' => 'text/xml',
-        ])
-        ->withBasicAuth($this->username, $this->password)
-        ->acceptJson()->get("https://ivarscomagenciadepublicidad.com:8443/api/v2/domains/{$id}/status");
-
+    public function estado($id)
+    {
+        $response = $this->client()->get($this->baseUrl . "/api/v2/domains/{$id}/status");
         $estado = $response->json();
 
         return $estado;
     }
-
-    public function obtenerDetallesDominio(string $domainId) : array
-    {
-        $response = Http::withHeaders([
-            'X-Api-Key' => config('services.ionos.key'),
-        ])->acceptJson()->get("https://api.hosting.ionos.com/domains/v1/domainitems/{$domainId}");
-
-        $data = $response->json();
-        if ($response->failed()) {
-            throw new \Exception('Error al obtener los detalles del dominio: ' . $data['message'] ?? 'Error desconocido');
-        }
-
-        return $data;
-    }
-
-    public function obtenerContactoDominio($id)
-    {
-        $response = Http::withHeaders([
-            'X-Api-Key' => config('services.ionos.key'),
-        ])->acceptJson()->get("https://api.hosting.ionos.com/domains/v1/domainitems/{$id}/contacts");
-
-        $data = $response->json();
-
-        if ($response->failed()) {
-            throw new \Exception('Error al obtener el dominio: ' . ($data['message'] ?? 'Error desconocido'));
-        }
-
-        // Puedes ajustar el tipo de contacto que quieres (adminContact, ownerContact, etc.)
-        return $data['registrant'] ?? [];
-    }
-
 }

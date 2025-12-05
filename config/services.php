@@ -41,7 +41,8 @@ return [
     'plesk' => [
         'host' => env('HOST'),
         'username' => env('USERNAME'),
-        'password' => env('PASSWORD')
+        'password' => env('PASSWORD'),
+        'verify_ssl' => env('PLESK_VERIFY_SSL', false),
     ]
 
 ];
