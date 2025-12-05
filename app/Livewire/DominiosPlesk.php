@@ -17,6 +17,7 @@ class DominiosPlesk extends Component
     public $sortField = 'created'; // name | created
     public $error = null;
     public $server = 'server1'; // Servidor seleccionado
+    public $page = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
