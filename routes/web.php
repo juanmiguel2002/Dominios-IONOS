@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
     Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])->name('enviar');
     Route::get('/hosting', [Hosting::class, 'index'])->name('hosting');
-    Route::get('/users', [UsersController::class, 'index'])->name('users');
+    //Route::get('/users', [UsersController::class, 'index'])->name('users');
 });
 
 require __DIR__.'/auth.php';
