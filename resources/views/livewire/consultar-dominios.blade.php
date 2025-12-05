@@ -55,6 +55,12 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-900 dark:text-gray-100">
+                    <tr class="dark:hover:bg-gray-700 hover:bg-gray-100">
+                        <td class="border p-2 dark:border-gray-700">hansdieterotto.foundation</td>
+                        <td class="border p-2 dark:border-gray-700">.foundation</td>
+                        <td class="border p-2 dark:border-gray-700">Renueva el 11/09/2026</td>
+                        <td class="border p-2 dark:border-gray-700 text-green-600">Activo</td>
+                    </tr>
                     @forelse ($dominios as $dominio)
                         @php
                             $provisioning = $dominio['provisioningStatus'] ?? [];

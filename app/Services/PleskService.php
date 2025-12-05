@@ -3,21 +3,32 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Exception;
 
 class PleskService
 {
-
+    protected $serverKey;
     protected $baseUrl;
     protected $username;
     protected $password;
     protected $verifySsl;
+    protected $serverName;
 
-    public function __construct()
+    public function __construct($serverKey = 'server1')
     {
-        $this->baseUrl = config('services.plesk.host');
-        $this->username = config('services.plesk.username');
-        $this->password = config('services.plesk.password');
-        $this->verifySsl = config('services.plesk.verify_ssl', true);
+        $this->serverKey = $serverKey;
+
+        $config = config("services.plesk.servers.{$serverKey}");
+
+        if (!$config) {
+            throw new Exception("El servidor Plesk '{$serverKey}' no está configurado.");
+        }
+
+        $this->serverName = $config['name'];
+        $this->baseUrl = rtrim($config['host'], '/');
+        $this->username = $config['username'];
+        $this->password = $config['password'];
+        $this->verifySsl = $config['verify_ssl'] ?? true;
     }
 
     protected function client()
@@ -27,26 +38,44 @@ class PleskService
             ->acceptJson();
     }
 
+    /** 🌐 Comprobar estado del servidor */
+    public function estadoServidor()
+    {
+        try {
+            $response = $this->client()->get("{$this->baseUrl}/api/v2/server");
+
+            return $response->successful()
+                ? 'online'
+                : 'offline';
+
+        } catch (\Throwable $e) {
+            return 'offline';
+        }
+    }
+
+    /** 📄 Obtener lista de dominios */
     public function obtenerHosting()
     {
-        $response = $this->client()->get($this->baseUrl . '/api/v2/domains');
-
-        if (!$response->successful()) {
+        try {
+            $response = $this->client()->get("{$this->baseUrl}/api/v2/domains");
+        } catch (\Throwable $e) {
             return collect([]);
         }
 
-        $dominios = $response->json();
-
-        //dd(collect($dominios));
-
-        return collect($dominios);
+        return $response->successful()
+            ? collect($response->json())
+            : collect([]);
     }
 
+    /** 🔎 Obtener estado de un dominio */
     public function estado($id)
     {
-        $response = $this->client()->get($this->baseUrl . "/api/v2/domains/{$id}/status");
-        $estado = $response->json();
+        try {
+            $response = $this->client()->get("{$this->baseUrl}/api/v2/domains/{$id}/status");
+        } catch (\Throwable $e) {
+            return ['status' => 'unknown'];
+        }
 
-        return $estado;
+        return $response->json() ?? ['status' => 'unknown'];
     }
 }

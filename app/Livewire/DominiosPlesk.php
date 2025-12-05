@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Services\PleskService;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class DominiosPlesk extends Component
 {
@@ -13,41 +13,55 @@ class DominiosPlesk extends Component
 
     public $search = '';
     public $limit = 20;
-    public $sortDirection = 'desc'; // 'asc' o 'desc'
-    public $sortField = 'created'; // 'name' o 'created'
+    public $sortDirection = 'desc'; // asc | desc
+    public $sortField = 'created'; // name | created
     public $error = null;
-    public $page = 1;
+    public $server = 'server1'; // Servidor seleccionado
 
     protected $queryString = [
         'search' => ['except' => ''],
-        'limit' => ['except' => 25],
+        'limit' => ['except' => 20],
         'sortDirection' => ['except' => 'desc'],
+        'sortField' => ['except' => 'created'],
+        'server' => ['except' => 'server1'],
         'page' => ['except' => 1],
     ];
 
     public function updating($property)
     {
-        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField'])) {
+        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField', 'server'])) {
             $this->resetPage();
         }
     }
 
     public function render()
     {
-        $plesk = new PleskService();
-        $hosting = $plesk->obtenerHosting();
-
-        if ($this->search) {
-            $hosting = $hosting->filter(fn($d) => str_contains(strtolower($d['name']), strtolower($this->search)));
+        try {
+            $plesk = new PleskService($this->server);
+            $hosting = $plesk->obtenerHosting();
+        } catch (\Throwable $e) {
+            $this->error = "No se pudo conectar al servidor seleccionado.";
+            $hosting = collect([]);
         }
 
-        // Ordenar por campo seleccionado
-        $hosting = $hosting->sortBy(function ($d) {
-            if ($this->sortField === 'name') {
-                return strtolower($d['name']);
-            }
-            return $d['created'] ?? null;
-        }, SORT_REGULAR, $this->sortDirection === 'asc');
+        // Filtro por búsqueda
+        if ($this->search) {
+            $hosting = $hosting->filter(
+                fn($d) => str_contains(
+                    strtolower($d['name'] ?? ''),
+                    strtolower($this->search)
+                )
+            );
+        }
+
+        // Ordenamiento
+        $hosting = $hosting->sortBy(
+            fn($d) => $this->sortField === 'name'
+                ? strtolower($d['name'] ?? '')
+                : ($d['created'] ?? null),
+            SORT_REGULAR,
+            $this->sortDirection === 'asc'
+        );
 
         // Paginación manual
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -60,11 +74,21 @@ class DominiosPlesk extends Component
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('livewire.dominios-plesk', ['hosting' => $paginator, 'plesk' => $plesk, ]);
+        return view('livewire.dominios-plesk', [
+            'hosting' => $paginator,
+            'plesk' => $plesk,
+            'estadoServidor' => $plesk->estadoServidor(),
+        ]);
     }
 
     public function resetFiltros()
     {
-        $this->reset(['search', 'limit', 'sortField', 'page', 'sortDirection', 'sortField']);
+        $this->reset([
+            'search',
+            'limit',
+            'sortField',
+            'sortDirection',
+            'page',
+        ]);
     }
 }
