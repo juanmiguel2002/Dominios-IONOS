@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DominioController;
 use App\Http\Controllers\Hosting;
-use App\Http\Controllers\UsersController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
