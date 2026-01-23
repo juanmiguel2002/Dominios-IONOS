@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('dominios:enviar-renovaciones')->dailyAt('09:00');
+        $schedule->command('renovacion:cron')->dailyAt('09:00');
         // Add your scheduled tasks here.
     }
 
