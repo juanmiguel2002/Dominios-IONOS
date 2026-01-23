@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
 
         // Register the new command here
-        Commands\EnviarRenovaciones::class,
+        Commands\EnviarRenovacion::class,
     ];
 
     /**

@@ -3,17 +3,31 @@
 namespace App\Console\Commands;
 
 use App\Mail\DominioRenovado;
-use Illuminate\Console\Command;
-use App\Services\IonosService;
 use App\Mail\RenovacionDominio;
+use App\Services\IonosService;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
-class EnviarRenovaciones extends Command
+class EnviarRenovacion extends Command
 {
-    protected $signature = 'dominios:enviar-renovaciones';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'renovacion:cron';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Enviar email de renovación 30 días antes de la expiración del dominio';
 
+    /**
+     * Execute the console command.
+     */
     public function handle(IonosService $ionos)
     {
         $this->info('Ejecutando revisión de dominios...');
@@ -89,5 +103,4 @@ class EnviarRenovaciones extends Command
             $this->error("Error general: " . $e->getMessage());
         }
     }
-
 }
