@@ -36,7 +36,7 @@ class DominioController extends Controller
             $fecha = Carbon::parse($dominio['expirationDate']);
             $diasRestantes = now()->diffInDays($fecha, true); // puede ser negativo
 
-            Mail::to($contacto['email'])->cc('web@ivarscomagenciadepublicidad.com')->bcc('info@ivarscom.com')
+            Mail::to($contacto['email'])->cc('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com')
                 ->send(new RenovacionDominio($nombre, $fecha, $diasRestantes));
 
             Log::info("Correo enviado para el dominio: {$nombre}");
