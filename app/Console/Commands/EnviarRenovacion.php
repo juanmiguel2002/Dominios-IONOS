@@ -45,7 +45,7 @@ class EnviarRenovacion extends Command
                     continue;
                 }
 
-                $fecha = Carbon::parse($fechaRenovacion)->startOfDay();
+                $fecha = Carbon::parse($fechaRenovacion);
                 $hoy = now()->startOfDay();
                 $diasRestantes = $hoy->diffInDays($fecha, false);
 
