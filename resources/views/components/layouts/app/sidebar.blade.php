@@ -14,7 +14,7 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="globe-lock" :href="route('hosting')" :current="request()->routeIs('hosting')" wire:navigate>{{ __('Hosting') }}</flux:navlist.item>
+                    {{-- <flux:navlist.item icon="globe-lock" :href="route('hosting')" :current="request()->routeIs('hosting')" wire:navigate>{{ __('Hosting') }}</flux:navlist.item> --}}
                 </flux:navlist.group>
             </flux:navlist>
 
@@ -34,7 +34,7 @@
                     icon:trailing="chevrons-up-down"
                 />
 
-                <flux:menu class="w-[220px]">
+                <flux:menu class="w-55">
                     <flux:menu.radio.group>
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
