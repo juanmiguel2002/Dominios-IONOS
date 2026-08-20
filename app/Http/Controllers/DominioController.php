@@ -12,19 +12,16 @@ use Illuminate\Support\Facades\Log;
 class DominioController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index(Request $request, IonosService $ionos)
     {
-
-        $ionos = new IonosService();
         $dominio = $ionos->obtenerDetallesDominio($request->id);
         $contacto = $ionos->obtenerContactoDominio($request->id);
         return view('dominio', ['id' => $request->id, 'dominio' => $dominio, 'contacto' => $contacto]);
     }
 
-    public function enviarEmail($id)
+    public function enviarEmail($id, IonosService $ionos)
     {
         try {
-            $ionos = new IonosService();
             $dominio = $ionos->obtenerDetallesDominio($id);
             $contacto = $ionos->obtenerContactoDominio($id);
 

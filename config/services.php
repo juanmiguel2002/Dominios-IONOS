@@ -35,7 +35,7 @@ return [
         ],
     ],
     'ionos' => [
-        'key' => env('API_KEY'),
+        'key' => env('IONOS_API_KEY'),
     ],
 
     'plesk' => [

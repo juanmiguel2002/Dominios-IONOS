@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Mail\DominioRenovado;
 use App\Mail\RenovacionDominio;
+use App\Models\DomainNotice;
 use App\Services\IonosService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -16,93 +17,122 @@ class EnviarRenovacion extends Command
      *
      * @var string
      */
-    protected $signature = 'renovacion:cron';
+    protected $signature = 'renovacion:cron {--dias=30 : Días de antelación del aviso de renovación}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Enviar email de renovación 30 días antes de la expiración del dominio';
+    protected $description = 'Envía el aviso de renovación cuando el dominio entra en el umbral de días y la confirmación el día de la renovación (idempotente).';
 
     /**
      * Execute the console command.
      */
-    public function handle(IonosService $ionos)
+    public function handle(IonosService $ionos): int
     {
         $this->info('Ejecutando revisión de dominios...');
 
+        $umbral = max(0, (int) $this->option('dias'));
+
         try {
             $dominios = $ionos->obtenerDominios();
+        } catch (\Throwable $e) {
+            $this->error('Error obteniendo dominios: ' . $e->getMessage());
 
-            foreach ($dominios as $dominio) {
-                $fechaRenovacion = $dominio['provisioningStatus']['setToExpireOn']
-                    ?? $dominio['provisioningStatus']['setToRenewOn']
-                    ?? null;
+            return self::FAILURE;
+        }
 
-                if (!$fechaRenovacion) {
-                    $this->warn("Dominio {$dominio['name']} no tiene fecha de renovación.");
-                    continue;
-                }
+        foreach ($dominios as $dominio) {
+            $nombre = $dominio['name'] ?? null;
 
-                $fecha = Carbon::parse($fechaRenovacion);
-                $hoy = now()->startOfDay();
-                $diasRestantes = $hoy->diffInDays($fecha, false);
-
-                $contact = $ionos->obtenerContactoDominio($dominio['id'] ?? null);
-                $emailTitular = $contact['email'] ?? '';
-
-
-                // Mostrar información de seguimiento
-                $this->info("Dominio {$dominio['name']} - Fecha renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes} - Email titular: {$emailTitular}");
-                //$this->info("Dominio: {$dominio['name']} - Fecha renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes}");
-
-                // Si faltan exactamente 30 días
-                if ($diasRestantes === 30) {
-                    $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
-
-                    if (!empty($emailTitular)) {
-                        $mail->cc($emailTitular);
-                    }
-
-                    $mail->send(new RenovacionDominio($dominio['name'], $fecha, $diasRestantes));
-
-                    $this->info("✅ Email de renovación enviado para el dominio {$dominio['name']}.");
-                    try {
-
-                    } catch (\Throwable $mailError) {
-                    }
-                }else {
-                    $this->info("No se envió email para {$dominio['name']}, faltan {$diasRestantes} días.");
-                }
-
-                // 🟩 Día exacto de la renovación → Confirmación de renovación
-                if ($diasRestantes === 0) {
-                    try {
-
-                        $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
-
-                        if ($emailTitular) {
-                            $mail->cc($emailTitular);
-                        }
-
-                        $mail->send(new DominioRenovado($dominio['name'], $fecha));
-
-                        $this->info("✅ Confirmación de renovación enviada para {$dominio['name']}.");
-
-                    } catch (\Throwable $mailError) {
-                        $this->error("❌ Error enviando confirmación para {$dominio['name']}: " . $mailError->getMessage());
-                    }
-                }
-
-                // Si el dominio ya expiró
-                if ($diasRestantes < 0) {
-                    $this->warn("⚠️ Dominio {$dominio['name']} ya expiró ({$fecha->toDateString()}).");
-                }
+            if (! $nombre) {
+                continue;
             }
 
+            $fechaRaw = $dominio['provisioningStatus']['setToExpireOn']
+                ?? $dominio['provisioningStatus']['setToRenewOn']
+                ?? null;
+
+            if (! $fechaRaw) {
+                $this->warn("Dominio {$nombre} no tiene fecha de renovación.");
+                continue;
+            }
+
+            $fecha = Carbon::parse($fechaRaw);
+            $diasRestantes = now()->startOfDay()->diffInDays($fecha->copy()->startOfDay(), false);
+
+            $this->line("Dominio {$nombre} - Renovación: {$fecha->toDateString()} - Días restantes: {$diasRestantes}");
+
+            // Aviso previo: se envía una única vez cuando el dominio entra en el umbral.
+            if ($diasRestantes >= 0 && $diasRestantes <= $umbral) {
+                $this->enviarUnaVez($ionos, $dominio, $nombre, $fecha, DomainNotice::TYPE_AVISO, $diasRestantes);
+            }
+
+            // Confirmación el día exacto de la renovación (una única vez por ciclo).
+            if ($diasRestantes === 0) {
+                $this->enviarUnaVez($ionos, $dominio, $nombre, $fecha, DomainNotice::TYPE_RENOVADO, $diasRestantes);
+            }
+
+            if ($diasRestantes < 0) {
+                $this->warn("⚠️ Dominio {$nombre} ya expiró ({$fecha->toDateString()}).");
+            }
+        }
+
+        return self::SUCCESS;
+    }
+
+    /**
+     * Envía el correo del tipo indicado solo si no se ha enviado ya para este dominio y ciclo.
+     */
+    protected function enviarUnaVez(
+        IonosService $ionos,
+        array $dominio,
+        string $nombre,
+        Carbon $fecha,
+        string $tipo,
+        int $diasRestantes
+    ): void {
+        $referenceDate = $fecha->toDateString();
+
+        $yaEnviado = DomainNotice::where('domain', $nombre)
+            ->where('type', $tipo)
+            ->whereDate('reference_date', $referenceDate)
+            ->exists();
+
+        if ($yaEnviado) {
+            $this->line("↪️  {$nombre}: aviso '{$tipo}' ya enviado para {$referenceDate}, se omite.");
+            return;
+        }
+
+        try {
+            $contacto = $ionos->obtenerContactoDominio($dominio['id'] ?? null);
+            $emailTitular = $contacto['email'] ?? '';
+
+            $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
+
+            if (! empty($emailTitular)) {
+                $mail->cc($emailTitular);
+            }
+
+            $mailable = $tipo === DomainNotice::TYPE_RENOVADO
+                ? new DominioRenovado($nombre, $fecha)
+                : new RenovacionDominio($nombre, $fecha, $diasRestantes);
+
+            $mail->send($mailable);
+
+            DomainNotice::create([
+                'domain' => $nombre,
+                'domain_id' => $dominio['id'] ?? null,
+                'type' => $tipo,
+                'reference_date' => $referenceDate,
+                'notified_at' => now(),
+            ]);
+
+            $this->info("✅ {$nombre}: correo '{$tipo}' enviado" . ($emailTitular ? " (titular: {$emailTitular})." : '.'));
         } catch (\Throwable $e) {
-            $this->error("Error general: " . $e->getMessage());
+            // No se registra el aviso, de modo que se reintentará en la próxima ejecución.
+            $this->error("❌ {$nombre}: error enviando '{$tipo}': " . $e->getMessage());
         }
     }
 }
