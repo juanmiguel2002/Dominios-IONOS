@@ -27,9 +27,13 @@ class IonosService
             ->retry(2, 200, throw: false);
     }
 
-    public function obtenerDominios(bool $pendingProvisioning = false): Collection
+    public function obtenerDominios(bool $pendingProvisioning = false, bool $fresh = false): Collection
     {
         $cacheKey = 'ionos.dominios.' . ($pendingProvisioning ? 'pending' : 'all');
+
+        if ($fresh) {
+            Cache::forget($cacheKey);
+        }
 
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($pendingProvisioning) {
             $response = $this->client()->get(self::BASE_URL . '/domainitems/domains', [
