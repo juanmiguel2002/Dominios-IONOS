@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Detalle del Dominio')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        <div class="p-6 max-w-4xl mx-auto w-full">
+        <div class="p-6 max-w-3xl mx-auto w-full">
 
             {{-- Volver --}}
             <a href="{{ route('dashboard') }}"
@@ -63,17 +63,17 @@
                         ->implode(', ');
                 @endphp
 
-                <div class="grid gap-4 md:grid-cols-2">
+                <div class="flex flex-col gap-6">
                     {{-- Información del dominio --}}
-                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-5">
+                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-8">
                         <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0zM3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
                             </svg>
                             Información del dominio
                         </h2>
-                        <dl class="divide-y divide-zinc-100 dark:divide-zinc-800 text-sm">
-                            <div class="flex justify-between gap-4 py-2">
+                        <dl class="divide-y divide-zinc-100 dark:divide-zinc-800 text-base">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Dominio</dt>
                                 <dd>
                                     <a href="https://{{ $dominio['name'] }}" target="_blank" rel="noopener noreferrer"
@@ -82,7 +82,7 @@
                                     </a>
                                 </dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">TLD</dt>
                                 <dd>
                                     <span class="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-300">
@@ -90,13 +90,13 @@
                                     </span>
                                 </dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Auto renovación</dt>
                                 <dd class="font-medium {{ ($dominio['autoRenew'] ?? false) ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                     {{ ($dominio['autoRenew'] ?? false) ? 'Sí' : 'No' }}
                                 </dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2 items-center">
+                            <div class="flex justify-between gap-4 py-3 items-center">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Fecha de renovación</dt>
                                 <dd class="flex items-center gap-2 text-zinc-800 dark:text-zinc-100">
                                     {{ $fechaExpira ? $fechaExpira->format('d/m/Y') : 'N/A' }}
@@ -111,23 +111,23 @@
                     </div>
 
                     {{-- Información de contacto --}}
-                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-5">
+                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-8">
                         <h2 class="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-4">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm0 0v1.5a2.5 2.5 0 0 0 5 0V12a9 9 0 1 0-9 9m4.5-1.2a8.9 8.9 0 0 1-4.5 1.2" />
                             </svg>
                             Información de contacto
                         </h2>
-                        <dl class="divide-y divide-zinc-100 dark:divide-zinc-800 text-sm">
-                            <div class="flex justify-between gap-4 py-2">
+                        <dl class="divide-y divide-zinc-100 dark:divide-zinc-800 text-base">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Nombre</dt>
                                 <dd class="text-zinc-800 dark:text-zinc-100 text-right">{{ data_get($contacto, 'postalInfo.name', 'N/A') }}</dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Empresa</dt>
                                 <dd class="text-zinc-800 dark:text-zinc-100 text-right">{{ data_get($contacto, 'postalInfo.organization', 'N/A') }}</dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Email</dt>
                                 <dd class="text-right">
                                     @if ($email = data_get($contacto, 'email'))
@@ -137,15 +137,15 @@
                                     @endif
                                 </dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Teléfono</dt>
                                 <dd class="text-zinc-800 dark:text-zinc-100 text-right">{{ data_get($contacto, 'voice', 'N/A') }}</dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">Dirección</dt>
                                 <dd class="text-zinc-800 dark:text-zinc-100 text-right">{{ $direccion !== '' ? $direccion : 'N/A' }}</dd>
                             </div>
-                            <div class="flex justify-between gap-4 py-2">
+                            <div class="flex justify-between gap-4 py-3">
                                 <dt class="text-zinc-500 dark:text-zinc-400">País</dt>
                                 <dd class="text-zinc-800 dark:text-zinc-100 text-right">{{ data_get($contacto, 'country', 'ES') }}</dd>
                             </div>
@@ -158,7 +158,7 @@
                     <form action="{{ route('enviar', ['id' => $id]) }}" method="POST">
                         @csrf
                         <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 transition cursor-pointer">
+                            class="inline-flex items-center gap-2 rounded-lg bg-accent text-white text-sm font-semibold px-4 py-2 transition cursor-pointer">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" />
                             </svg>
