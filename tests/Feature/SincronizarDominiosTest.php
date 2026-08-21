@@ -19,24 +19,30 @@ it('crea dominios nuevos a partir de la respuesta de IONOS', function () {
         [
             'id' => 'abc-123',
             'name' => 'ejemplo.com',
+            'tld' => 'com',
             'provisioningStatus' => [
                 'status' => 'ACTIVE',
+                'type' => 'REGISTRATION_IN_PROGRESS',
                 'setToRenewOn' => '2027-01-15',
+                'createdDate' => '2026-01-15',
                 'pendingProvisioning' => false,
             ],
         ],
     ]);
 
-    $resultado = app()->call([new SincronizarDominios(), 'handle']);
+    $resultado = app()->call([new SincronizarDominios, 'handle']);
 
     expect($resultado['creados'])->toBe(1);
     expect(Domain::where('ionos_id', 'abc-123')->exists())->toBeTrue();
 
     $domain = Domain::first();
     expect($domain->name)->toBe('ejemplo.com');
+    expect($domain->tld)->toBe('com');
     expect($domain->provisioning_status)->toBe('ACTIVE');
+    expect($domain->provisioning_type)->toBe('REGISTRATION_IN_PROGRESS');
     expect($domain->is_active)->toBeTrue();
     expect($domain->set_to_renew_on->toDateString())->toBe('2027-01-15');
+    expect($domain->created_date->toDateString())->toBe('2026-01-15');
 });
 
 it('actualiza un dominio existente sin duplicarlo ni perder los datos propios', function () {
@@ -56,7 +62,7 @@ it('actualiza un dominio existente sin duplicarlo ni perder los datos propios', 
         ],
     ]);
 
-    $resultado = app()->call([new SincronizarDominios(), 'handle']);
+    $resultado = app()->call([new SincronizarDominios, 'handle']);
 
     expect($resultado['actualizados'])->toBe(1);
     expect($resultado['creados'])->toBe(0);
@@ -76,7 +82,7 @@ it('marca inactivos los dominios que ya no están en IONOS sin borrarlos', funct
         ['id' => 'nuevo-1', 'name' => 'vigente.com', 'provisioningStatus' => ['status' => 'ACTIVE']],
     ]);
 
-    $resultado = app()->call([new SincronizarDominios(), 'handle']);
+    $resultado = app()->call([new SincronizarDominios, 'handle']);
 
     expect($resultado['inactivos'])->toBe(1);
     expect(Domain::where('ionos_id', 'viejo-1')->first()->is_active)->toBeFalse();
@@ -90,7 +96,7 @@ it('no desactiva nada si IONOS devuelve una lista vacía', function () {
 
     fakeIonosDomains([]);
 
-    $resultado = app()->call([new SincronizarDominios(), 'handle']);
+    $resultado = app()->call([new SincronizarDominios, 'handle']);
 
     expect($resultado['inactivos'])->toBe(0);
     expect(Domain::where('ionos_id', 'x-1')->first()->is_active)->toBeTrue();

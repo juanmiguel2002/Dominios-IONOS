@@ -27,8 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
     Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
-    Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])->name('enviar');
-    //Route::get('/hosting', [Hosting::class, 'index'])->name('hosting');
+    Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])
+        ->middleware('throttle:6,1')
+        ->name('enviar');
+    // Route::get('/hosting', [Hosting::class, 'index'])->name('hosting');
 });
 
 require __DIR__.'/auth.php';

@@ -38,7 +38,7 @@ class EnviarRenovacion extends Command
         try {
             $dominios = $ionos->obtenerDominios();
         } catch (\Throwable $e) {
-            $this->error('Error obteniendo dominios: ' . $e->getMessage());
+            $this->error('Error obteniendo dominios: '.$e->getMessage());
 
             return self::FAILURE;
         }
@@ -56,6 +56,7 @@ class EnviarRenovacion extends Command
 
             if (! $fechaRaw) {
                 $this->warn("Dominio {$nombre} no tiene fecha de renovación.");
+
                 continue;
             }
 
@@ -102,6 +103,7 @@ class EnviarRenovacion extends Command
 
         if ($yaEnviado) {
             $this->line("↪️  {$nombre}: aviso '{$tipo}' ya enviado para {$referenceDate}, se omite.");
+
             return;
         }
 
@@ -109,7 +111,8 @@ class EnviarRenovacion extends Command
             $contacto = $ionos->obtenerContactoDominio($dominio['id'] ?? null);
             $emailTitular = $contacto['email'] ?? '';
 
-            $mail = Mail::to('web@ivarscomagenciadepublicidad.com')->bcc('joseivars@ivarscom.com');
+            $mail = Mail::to(config('dominios.notificaciones.to'))
+                ->bcc(config('dominios.notificaciones.bcc'));
 
             if (! empty($emailTitular)) {
                 $mail->cc($emailTitular);
@@ -129,10 +132,10 @@ class EnviarRenovacion extends Command
                 'notified_at' => now(),
             ]);
 
-            $this->info("✅ {$nombre}: correo '{$tipo}' enviado" . ($emailTitular ? " (titular: {$emailTitular})." : '.'));
+            $this->info("✅ {$nombre}: correo '{$tipo}' enviado".($emailTitular ? " (titular: {$emailTitular})." : '.'));
         } catch (\Throwable $e) {
             // No se registra el aviso, de modo que se reintentará en la próxima ejecución.
-            $this->error("❌ {$nombre}: error enviando '{$tipo}': " . $e->getMessage());
+            $this->error("❌ {$nombre}: error enviando '{$tipo}': ".$e->getMessage());
         }
     }
 }

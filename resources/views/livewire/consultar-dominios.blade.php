@@ -13,16 +13,6 @@
             </span>
         </div>
 
-        {{-- Error --}}
-        @if ($error)
-            <div class="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-950/40 p-4 mb-6 text-red-700 dark:text-red-300">
-                <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                </svg>
-                <span class="text-sm">{{ $error }}</span>
-            </div>
-        @endif
-
         {{-- Filtros --}}
         <div class="flex flex-wrap items-center gap-3 mb-6 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4">
             <div class="relative flex-1 min-w-[200px]">
@@ -93,21 +83,16 @@
                     <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800 text-zinc-800 dark:text-zinc-100">
                         @forelse ($dominios as $dominio)
                             @php
-                                $provisioning = $dominio['provisioningStatus'] ?? [];
-                                $estadoTransferencia = $provisioning['type'] ?? null;
-                                $expira = $provisioning['setToExpireOn'] ?? null;
-                                $renueva = $provisioning['setToRenewOn'] ?? null;
-                                $creado = $provisioning['createdDate'] ?? null;
-                                $enTransferencia = $estadoTransferencia === 'REGISTRATION_IN_PROGRESS';
+                                $enTransferencia = $dominio->provisioning_type === 'REGISTRATION_IN_PROGRESS';
 
-                                if ($enTransferencia && $creado) {
-                                    $fechaMostrar = \Carbon\Carbon::parse($creado);
+                                if ($enTransferencia && $dominio->created_date) {
+                                    $fechaMostrar = $dominio->created_date;
                                     $textoFecha = 'Transferencia iniciada';
-                                } elseif ($expira) {
-                                    $fechaMostrar = \Carbon\Carbon::parse($expira);
+                                } elseif ($dominio->set_to_expire_on) {
+                                    $fechaMostrar = $dominio->set_to_expire_on;
                                     $textoFecha = 'Expira';
-                                } elseif ($renueva) {
-                                    $fechaMostrar = \Carbon\Carbon::parse($renueva);
+                                } elseif ($dominio->set_to_renew_on) {
+                                    $fechaMostrar = $dominio->set_to_renew_on;
                                     $textoFecha = 'Renueva';
                                 } else {
                                     $fechaMostrar = null;
@@ -122,19 +107,19 @@
 
                             <tr class="transition hover:bg-zinc-50 dark:hover:bg-zinc-800/60 {{ $porVencer ? 'bg-red-50/70 dark:bg-red-950/20' : '' }}">
                                 <td class="px-4 py-3 {{ $porVencer ? 'border-l-2 border-red-500' : 'border-l-2 border-transparent' }}">
-                                    @if (!$estado)
-                                        <a href="{{ route('dominios.show', ['id' => $dominio['id']]) }}"
+                                    @if (!$estado && $dominio->ionos_id)
+                                        <a href="{{ route('dominios.show', ['id' => $dominio->ionos_id]) }}"
                                            class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                                            {{ $dominio['name'] }}
+                                            {{ $dominio->name }}
                                         </a>
                                     @else
-                                        <span class="font-medium">{{ $dominio['name'] }}</span>
+                                        <span class="font-medium">{{ $dominio->name }}</span>
                                     @endif
                                 </td>
 
                                 <td class="px-4 py-3">
                                     <span class="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-300">
-                                        {{ $dominio['tld'] }}
+                                        {{ $dominio->tld ?? '—' }}
                                     </span>
                                 </td>
 

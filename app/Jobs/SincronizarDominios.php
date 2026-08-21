@@ -44,9 +44,12 @@ class SincronizarDominios implements ShouldQueue
                 ['ionos_id' => $ionosId],
                 [
                     'name' => $nombre,
+                    'tld' => $d['tld'] ?? null,
                     'provisioning_status' => $d['provisioningStatus']['status'] ?? null,
+                    'provisioning_type' => $d['provisioningStatus']['type'] ?? null,
                     'set_to_renew_on' => $d['provisioningStatus']['setToRenewOn'] ?? null,
                     'set_to_expire_on' => $d['provisioningStatus']['setToExpireOn'] ?? null,
+                    'created_date' => $d['provisioningStatus']['createdDate'] ?? null,
                     'pending_provisioning' => (bool) ($d['provisioningStatus']['pendingProvisioning'] ?? false),
                     'raw' => $d,
                     'is_active' => true,
