@@ -1,0 +1,90 @@
+name: deploy
+
+# Despliega en Hostinger cada push a main (o a mano desde la pestaña Actions).
+# El .env y storage/ del servidor no se tocan nunca.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-produccion
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: produccion
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Tests
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci
+          npm run build
+          cp .env.example .env
+          php artisan key:generate
+          ./vendor/bin/pest
+
+      - name: Preparar build de producción
+        run: |
+          rm .env
+          composer install --no-dev --no-interaction --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host produccion
+            HostName ${{ secrets.SSH_HOST }}
+            Port ${{ secrets.SSH_PORT }}
+            User ${{ secrets.SSH_USER }}
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking yes
+          EOF
+
+      - name: Modo mantenimiento
+        run: ssh produccion "cd '${{ secrets.DEPLOY_PATH }}' && test -f artisan && php artisan down --retry=15"
+
+      - name: Subir código
+        env:
+          DEST: produccion:${{ secrets.DEPLOY_PATH }}
+        run: |
+          # Carpetas de código: copia exacta (--delete) para que no queden archivos borrados.
+          for dir in app bootstrap config database lang resources routes vendor public/build; do
+            rsync -az --delete --exclude '/cache/*.php' "$dir/" "$DEST/$dir/"
+          done
+          # Resto de public/ y la raíz: sin --delete, para no borrar nada propio del servidor.
+          rsync -az --exclude build --exclude storage public/ "$DEST/public/"
+          rsync -az artisan composer.json composer.lock "$DEST/"
+
+      - name: Migraciones y caché
+        run: |
+          ssh produccion "cd '${{ secrets.DEPLOY_PATH }}' \
+            && php artisan migrate --force \
+            && php artisan optimize:clear \
+            && php artisan optimize"
+
+      - name: Salir de mantenimiento
+        if: always()
+        run: ssh produccion "cd '${{ secrets.DEPLOY_PATH }}' && php artisan up" || true
