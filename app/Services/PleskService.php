@@ -35,7 +35,9 @@ class PleskService
     {
         return Http::withBasicAuth($this->username, $this->password)
             ->withOptions(['verify' => $this->verifySsl])
-            ->acceptJson();
+            ->acceptJson()
+            ->connectTimeout(5)
+            ->timeout(10);
     }
 
     /** 🌐 Comprobar estado del servidor */

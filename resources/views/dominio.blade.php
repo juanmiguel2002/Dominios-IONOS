@@ -15,7 +15,7 @@
             <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
                 <div>
                     <p class="text-sm text-zinc-500 dark:text-zinc-400">Detalle del dominio</p>
-                    <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $dominio['name'] }}</h1>
+                    <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ $dominio['name'] ?? 'Dominio no disponible' }}</h1>
                 </div>
                 @if ($dominio)
                     <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold

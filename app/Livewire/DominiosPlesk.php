@@ -17,7 +17,6 @@ class DominiosPlesk extends Component
     public $sortField = 'created'; // name | created
     public $error = null;
     public $server = 'server1'; // Servidor seleccionado
-    public $page = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -37,9 +36,13 @@ class DominiosPlesk extends Component
 
     public function render()
     {
+        $this->error = null;
+        $estadoServidor = 'offline';
+
         try {
             $plesk = new PleskService($this->server);
             $hosting = $plesk->obtenerHosting();
+            $estadoServidor = $plesk->estadoServidor();
         } catch (\Throwable $e) {
             $this->error = "No se pudo conectar al servidor seleccionado.";
             $hosting = collect([]);
@@ -77,8 +80,7 @@ class DominiosPlesk extends Component
 
         return view('livewire.dominios-plesk', [
             'hosting' => $paginator,
-            'plesk' => $plesk,
-            'estadoServidor' => $plesk->estadoServidor(),
+            'estadoServidor' => $estadoServidor,
         ]);
     }
 
@@ -89,7 +91,7 @@ class DominiosPlesk extends Component
             'limit',
             'sortField',
             'sortDirection',
-            'page',
         ]);
+        $this->resetPage();
     }
 }

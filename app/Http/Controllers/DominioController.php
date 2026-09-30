@@ -14,8 +14,16 @@ class DominioController extends Controller
     //
     public function index(Request $request, IonosService $ionos)
     {
-        $dominio = $ionos->obtenerDetallesDominio($request->id);
-        $contacto = $ionos->obtenerContactoDominio($request->id);
+        try {
+            $dominio = $ionos->obtenerDetallesDominio($request->id);
+            $contacto = $ionos->obtenerContactoDominio($request->id);
+        } catch (\Throwable $e) {
+            Log::error("Error al obtener el dominio ID {$request->id}: ".$e->getMessage());
+
+            session()->now('error', 'No se pudo obtener la información del dominio desde IONOS. Inténtalo de nuevo en unos minutos.');
+            $dominio = [];
+            $contacto = [];
+        }
 
         return view('dominio', ['id' => $request->id, 'dominio' => $dominio, 'contacto' => $contacto]);
     }

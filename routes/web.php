@@ -25,7 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+});
 
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
     Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])
         ->middleware('throttle:6,1')
