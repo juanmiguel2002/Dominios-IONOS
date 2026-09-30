@@ -10,7 +10,7 @@ Aplicación web desarrollada con **Laravel 10** y **Livewire** para consultar, v
 - 🔎 Búsqueda por nombre de dominio
 - 🗂️ Filtros por cantidad de resultados y orden por fecha de renovación
 - 📬 Notificación por correo al cliente y administrador 30 días antes de la renovación
-- 🧑 Visualización de usuarios registrados con roles
+- 🧑 Visualización de usuarios registrados
 - ⚡ Interfaz dinámica y reactiva con Livewire
 - 🌙 Soporte para **modo oscuro**
 - 📄 Vista detallada del dominio con datos completos
