@@ -12,24 +12,25 @@
             <div class="text-gray-600">No hay usuarios registrados.</div>
         @else
             <div class="overflow-x-auto">
-                <table class="min-w-full bg-white border border-gray-300 rounded shadow-sm">
-                    <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-                        <tr>
-                            <th class="p-3 border-b">ID</th>
-                            <th class="p-3 border-b">Nombre</th>
-                            <th class="p-3 border-b">Email</th>
-                            <th class="p-3 border-b">Fecha de registro</th>
-                            <th class="p-3 border-b text-right">Acciones</th>
+                <table class="min-w-full bg-white border border-gray-300 rounded shadow-sm dark:border-gray-700">
+                    <thead class="bg-gray-100 text-left text-sm font-semibold text-gray-700 dark:bg-gray-800  dark:text-gray-200 dark:border-gray-700">
+                        <tr class="dark:border-gray-700">
+                            <th class="p-3 border-b dark:border-gray-700">ID</th>
+                            <th class="p-3 border-b dark:border-gray-700">Nombre</th>
+                            <th class="p-3 border-b dark:border-gray-700">Email</th>
+                            <th class="p-3 border-b dark:border-gray-700">Fecha de registro</th>
+                            <th class="p-3 border-b dark:border-gray-700 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm text-gray-800">
+                    <tbody class="text-sm text-gray-800 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-white">
+                        {{-- Iterar sobre los usuarios --}}
                         @foreach ($users as $user)
-                            <tr class="hover:bg-gray-50">
-                                <td class="p-3 border-b">{{ $user->id }}</td>
-                                <td class="p-3 border-b">{{ $user->name }}</td>
-                                <td class="p-3 border-b">{{ $user->email }}</td>
-                                <td class="p-3 border-b">{{ $user->created_at->format('d/m/Y') }}</td>
-                                <td class="p-3 border-b text-right">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 dark:border-gray-700">
+                                <td class="p-3 border-b dark:border-gray-700">{{ $user->id }}</td>
+                                <td class="p-3 border-b dark:border-gray-700">{{ $user->name }}</td>
+                                <td class="p-3 border-b dark:border-gray-700">{{ $user->email }}</td>
+                                <td class="p-3 border-b dark:border-gray-700">{{ $user->created_at->format('d/m/Y') }}</td>
+                                <td class="p-3 border-b text-right dark:border-gray-700">
                                 </td>
                             </tr>
                         @endforeach

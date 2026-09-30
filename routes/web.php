@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\UsersController;
-use App\Livewire\ConsultarDominio;
+use App\Http\Controllers\DominioController;
+use App\Http\Controllers\Hosting;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Route::get('/register', function () {
+//     return view('auth.register');
+// })->name('register');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -21,10 +25,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+});
 
-    Route::get('/dominios/{id}', ConsultarDominio::class)->name('dominios.show');
-    Route::get('/users', [UsersController::class, 'index'])->name('users');
-
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dominio/{id}', [DominioController::class, 'index'])->name('dominios.show');
+    Route::post('/dominio/{id}/enviar-email', [DominioController::class, 'enviarEmail'])
+        ->middleware('throttle:6,1')
+        ->name('enviar');
+    // Route::get('/hosting', [Hosting::class, 'index'])->name('hosting');
 });
 
 require __DIR__.'/auth.php';

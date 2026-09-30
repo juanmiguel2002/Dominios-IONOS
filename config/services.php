@@ -35,7 +35,27 @@ return [
         ],
     ],
     'ionos' => [
-        'key' => env('API_KEY'),
+        'key' => env('IONOS_API_KEY'),
     ],
+
+    'plesk' => [
+        'servers' => [
+            'server1' => [
+                'name' => 'Servidor Principal',
+                'host' => env('PLESK1_HOST'),
+                'username' => env('PLESK1_USERNAME'),
+                'password' => env('PLESK1_PASSWORD'),
+                'verify_ssl' => env('PLESK1_VERIFY_SSL', true),
+            ],
+            'server2' => [
+                'name' => 'Servidor Secundario',
+                'host' => env('PLESK2_HOST'),
+                'username' => env('PLESK2_USERNAME'),
+                'password' => env('PLESK2_PASSWORD'),
+                'verify_ssl' => env('PLESK2_VERIFY_SSL', true),
+            ],
+        ],
+    ]
+
 
 ];

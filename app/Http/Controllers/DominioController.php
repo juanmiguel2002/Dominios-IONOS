@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Mail\RenovacionDominio;
+use App\Services\IonosService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
+class DominioController extends Controller
+{
+    //
+    public function index(Request $request, IonosService $ionos)
+    {
+        try {
+            $dominio = $ionos->obtenerDetallesDominio($request->id);
+            $contacto = $ionos->obtenerContactoDominio($request->id);
+        } catch (\Throwable $e) {
+            Log::error("Error al obtener el dominio ID {$request->id}: ".$e->getMessage());
+
+            session()->now('error', 'No se pudo obtener la información del dominio desde IONOS. Inténtalo de nuevo en unos minutos.');
+            $dominio = [];
+            $contacto = [];
+        }
+
+        return view('dominio', ['id' => $request->id, 'dominio' => $dominio, 'contacto' => $contacto]);
+    }
+
+    public function enviarEmail($id, IonosService $ionos)
+    {
+        try {
+            $dominio = $ionos->obtenerDetallesDominio($id);
+            $contacto = $ionos->obtenerContactoDominio($id);
+
+            if (! $dominio || empty($dominio['name']) || empty($dominio['expirationDate'])) {
+                return redirect()->back()->with('error', 'No se pudo obtener la información del dominio.');
+            }
+
+            $nombre = $dominio['name'];
+            $fecha = Carbon::parse($dominio['expirationDate']);
+            $diasRestantes = now()->diffInDays($fecha, true); // puede ser negativo
+
+            Mail::to($contacto['email'])
+                ->cc(config('dominios.notificaciones.to'))
+                ->bcc(config('dominios.notificaciones.bcc'))
+                ->send(new RenovacionDominio($nombre, $fecha, $diasRestantes));
+
+            Log::info("Correo enviado para el dominio: {$nombre}");
+
+            return redirect()->back()->with('success', "Correo enviado para el dominio {$nombre}.");
+
+        } catch (\Throwable $e) {
+            Log::error("Error al enviar correo para dominio ID {$id}: ".$e->getMessage());
+
+            return redirect()->back()->with('error', 'Hubo un error al enviar el correo.');
+        }
+    }
+}

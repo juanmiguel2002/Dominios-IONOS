@@ -2,87 +2,62 @@
 
 namespace App\Livewire;
 
-use App\Services\IonosService;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Domain;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class ConsultarDominios extends Component
 {
-
     use WithPagination;
 
     public $search = '';
+
     public $limit = 25;
-    public $sort = 'asc';
-    public $error = null;
-    public $page = 1;
+
+    public $sortDirection = 'desc'; // 'asc' o 'desc'
+
+    public $sortField = 'renovacion'; // 'name' o 'renovacion'
+
+    public $estado = false; // true = solo dominios en transferencia
 
     protected $queryString = [
         'search' => ['except' => ''],
         'limit' => ['except' => 25],
-        'sort' => ['except' => 'asc'],
+        'sortDirection' => ['except' => 'desc'],
+        'sortField' => ['except' => 'renovacion'],
         'page' => ['except' => 1],
+        'estado' => ['except' => false],
     ];
 
     public function updating($property)
     {
-        if (in_array($property, ['search', 'limit', 'sort'])) {
+        if (in_array($property, ['search', 'limit', 'sortDirection', 'sortField', 'estado'])) {
             $this->resetPage();
         }
     }
 
+    public function render()
+    {
+        $orderColumn = $this->sortField === 'name' ? 'name' : 'set_to_expire_on';
+
+        $dominios = Domain::query()
+            ->where('is_active', true)
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->when($this->estado, fn ($q) => $q->where('provisioning_type', 'REGISTRATION_IN_PROGRESS'))
+            ->orderBy($orderColumn, $this->sortDirection === 'asc' ? 'asc' : 'desc')
+            ->paginate($this->limit);
+
+        return view('livewire.consultar-dominios', ['dominios' => $dominios]);
+    }
+
     public function resetFiltros()
     {
-        $this->reset(['search', 'limit', 'sort', 'page']);
+        $this->reset(['search', 'limit', 'sortField', 'sortDirection', 'estado']);
+        $this->resetPage();
     }
 
-    public function render(IonosService $ionos)
+    public function estadoDominio()
     {
-        try {
-            $domains = $ionos->obtenerDominios();
-        } catch (\Exception $e) {
-            $this->error = $e->getMessage();
-            return view('livewire.consultar-dominios', ['dominios' => collect()]);
-        }
-
-        // Buscar por nombre
-        if ($this->search) {
-            $domains = $domains->filter(fn($d) => str_contains(strtolower($d['name']), strtolower($this->search)));
-        }
-
-        // Ordenar por fecha de renovación
-        $domains = $domains->sortBy(fn($d) =>
-            $d['status']['provisioningStatus']['setToRenewOn'] ?? null,
-            SORT_REGULAR,
-            $this->sort === 'desc'
-        );
-
-        // Paginar manualmente
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $items = $domains->slice(($currentPage - 1) * $this->limit, $this->limit)->values();
-        $paginator = new LengthAwarePaginator(
-            $items,
-            $domains->count(),
-            $this->limit,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-
-        return view('livewire.consultar-dominios', ['dominios' => $paginator]);
-    }
-
-    private function paginateCollection($items, $perPage)
-    {
-        $page = $this->page ?? 1;
-        $items = $items->values(); // reset keys
-
-        return new LengthAwarePaginator(
-            $items->forPage($page, $perPage),
-            $items->count(),
-            $perPage,
-            $page,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $this->estado = ! $this->estado;
     }
 }
